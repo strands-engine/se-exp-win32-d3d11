@@ -1,0 +1,13 @@
+SOURCES LIST:
+
+[01] old STRANDS ENGINE implementations
+[02] ORGE engine repo
+[03] CRYENGINE engine repo
+[04] Chili TomatoNoodle YT tuts (+ hw3d repo)
+[05] Sam Arutuyunyan Input Handling YT tuts
+[06] bell0bytes tuts (https://bell0bytes.eu/game-programming/)
+[07] D3D11 Book (Zink, Pettineo, Hoxley)
+[08] D3D12 Book (Luna)
+[09] GLEW repo
+[10] GLUT repo
+[11] SDL repo

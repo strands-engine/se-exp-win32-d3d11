@@ -1,13 +1,18 @@
 #include <Windows.h>
 
 #include "win32_debug_message_map.h"
+#include "win32_key_code_converter.h"
+#include "debug_key_info_map.h"
 
 LRESULT CALLBACK WindowProc(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam)
 {
 #ifdef _DEBUG
+	static d3dexp::debug_key_info_map s_key_map;
 	static d3dexp::win32_debug_message_map s_msg_map;
 	OutputDebugString(s_msg_map(msg_id, wparam, lparam).c_str());
-#endif // DEBUG
+#endif // _DEBUG
+
+	static d3dexp::win32_key_code_converter s_kc_conv;
 
 	switch (msg_id)
 	{
@@ -16,18 +21,29 @@ LRESULT CALLBACK WindowProc(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wpara
 		break;
 
 	case WM_KEYDOWN:
-		if (wparam == 'F')
-		{
-			SetWindowText(wnd_h, "Respect!");
-		}
+#ifdef _DEBUG
+		OutputDebugString(s_key_map("key down", s_kc_conv.convert(wparam, lparam)).c_str());
+#endif // _DEBUG
 		break;
 
 	case WM_KEYUP:
-		if (wparam == 'F')
-		{
-			SetWindowText(wnd_h, "No Respect.");
-		}
+#ifdef _DEBUG
+		OutputDebugString(s_key_map("key up", s_kc_conv.convert(wparam, lparam)).c_str());
+#endif // _DEBUG
 		break;
+
+	case WM_SYSKEYDOWN:
+#ifdef _DEBUG
+		OutputDebugString(s_key_map("sys key down", s_kc_conv.convert(wparam, lparam)).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_SYSKEYUP:
+#ifdef _DEBUG
+		OutputDebugString(s_key_map("sys key up", s_kc_conv.convert(wparam, lparam)).c_str());
+#endif // _DEBUG
+		break;
+
 	}
 	return DefWindowProc(wnd_h, msg_id, wparam, lparam);
 }

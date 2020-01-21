@@ -17,6 +17,9 @@
 #define WM_NCUAHDRAWCAPTION    0x00AE
 #define WM_NCUAHDRAWFRAME      0x00AF
 
+// added based on: https://social.msdn.microsoft.com/Forums/en-US/8c82991d-ac7e-4f10-b875-3522dace10c0/f1-key-results-in-two-calls-to-cmainframeonhelp?forum=vcmfcatl
+#define WM_KEYF1               0x004D
+
 #define REGISTER_MESSAGE(msg){msg,#msg}
 
 namespace d3dexp {
@@ -195,7 +198,8 @@ namespace d3dexp {
 			REGISTER_MESSAGE(WM_DWMNCRENDERINGCHANGED),
 			REGISTER_MESSAGE(WM_ENTERSIZEMOVE),
 			REGISTER_MESSAGE(WM_NCUAHDRAWCAPTION),
-			REGISTER_MESSAGE(WM_NCUAHDRAWFRAME)})
+			REGISTER_MESSAGE(WM_NCUAHDRAWFRAME),
+			REGISTER_MESSAGE(WM_KEYF1)})
 	{}
 
 	std::string win32_debug_message_map::operator() (DWORD msg_id, WPARAM wparam, LPARAM lparam) const noexcept

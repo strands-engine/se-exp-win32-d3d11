@@ -1,15 +1,14 @@
 #include <Windows.h>
+#include <windowsx.h>
 
-#include "win32_debug_message_map.h"
 #include "win32_key_code_converter.h"
-#include "debug_key_info_map.h"
+#include "win32_debug_message_provider.h"
 
 LRESULT CALLBACK WindowProc(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam)
 {
 #ifdef _DEBUG
-	static d3dexp::debug_key_info_map s_key_map;
-	static d3dexp::win32_debug_message_map s_msg_map;
-	OutputDebugString(s_msg_map(msg_id, wparam, lparam).c_str());
+	static d3dexp::win32_debug_message_provider s_msg;
+	// OutputDebugString(s_msg.for_generic_event(msg_id, wparam, lparam).c_str());
 #endif // _DEBUG
 
 	static d3dexp::win32_key_code_converter s_kc_conv;
@@ -22,25 +21,91 @@ LRESULT CALLBACK WindowProc(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wpara
 
 	case WM_KEYDOWN:
 #ifdef _DEBUG
-		OutputDebugString(s_key_map("key down", s_kc_conv.convert(wparam, lparam)).c_str());
+		OutputDebugString(s_msg.for_key_event("key down", s_kc_conv.convert(wparam, lparam)).c_str());
 #endif // _DEBUG
 		break;
 
 	case WM_KEYUP:
 #ifdef _DEBUG
-		OutputDebugString(s_key_map("key up", s_kc_conv.convert(wparam, lparam)).c_str());
+		OutputDebugString(s_msg.for_key_event("key up", s_kc_conv.convert(wparam, lparam)).c_str());
 #endif // _DEBUG
 		break;
 
 	case WM_SYSKEYDOWN:
 #ifdef _DEBUG
-		OutputDebugString(s_key_map("sys key down", s_kc_conv.convert(wparam, lparam)).c_str());
+		OutputDebugString(s_msg.for_key_event("sys key down", s_kc_conv.convert(wparam, lparam)).c_str());
 #endif // _DEBUG
 		break;
 
 	case WM_SYSKEYUP:
 #ifdef _DEBUG
-		OutputDebugString(s_key_map("sys key up", s_kc_conv.convert(wparam, lparam)).c_str());
+		OutputDebugString(s_msg.for_key_event("sys key up", s_kc_conv.convert(wparam, lparam)).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_CHAR:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_char_event(static_cast<char>(wparam)).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_LBUTTONDOWN:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_mouse_event("left btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::lmb).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_LBUTTONUP:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_mouse_event("left btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::lmb).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_RBUTTONDOWN:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_mouse_event("right btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::rmb).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_RBUTTONUP:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_mouse_event("right btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::rmb).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_MBUTTONDOWN:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_mouse_event("mid btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::mmb).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_MBUTTONUP:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_mouse_event("mid btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::mmb).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_XBUTTONDOWN:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_mouse_event("x btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::x1mb).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_XBUTTONUP:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_mouse_event("x btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::x1mb).c_str());
+#endif // _DEBUG
+		break;
+
+	case WM_MOUSEMOVE:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_mouse_event("mouse move", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam)).c_str());
+#endif // _DEBUG
+		break;
+
+	default:
+#ifdef _DEBUG
+		OutputDebugString(s_msg.for_generic_event(msg_id, wparam, lparam).c_str());
 #endif // _DEBUG
 		break;
 

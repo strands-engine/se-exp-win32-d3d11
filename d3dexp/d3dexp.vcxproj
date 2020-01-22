@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClCompile Include="src\debug_key_info_map.cpp" />
     <ClCompile Include="src\win32_debug_message_map.cpp" />
+    <ClCompile Include="src\win32_debug_message_provider.cpp" />
     <ClCompile Include="src\win32_key_code_converter.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
@@ -91,6 +92,7 @@
     <ClInclude Include="src\debug_key_info_map.h" />
     <ClInclude Include="src\input_types.h" />
     <ClInclude Include="src\win32_debug_message_map.h" />
+    <ClInclude Include="src\win32_debug_message_provider.h" />
     <ClInclude Include="src\win32_key_code_converter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -204,7 +204,7 @@ namespace d3dexp {
 
 	std::string win32_debug_message_map::operator() (DWORD msg_id, WPARAM wparam, LPARAM lparam) const noexcept
 	{
-		constexpr int first_column_width = 25;
+		constexpr int first_column_width = 36;
 		const auto iter = m_map.find(msg_id);
 
 		std::ostringstream oss;
@@ -215,11 +215,11 @@ namespace d3dexp {
 		else
 		{
 			std::ostringstream padss;
-			padss << "Unknown message: 0x" << std::hex << msg_id;
+			padss << "-> unknown message: 0x" << std::hex << msg_id;
 			oss << std::left << std::setw(first_column_width) << padss.str() << std::right;
 		}
-		oss << "   LP: 0x" << std::hex << std::setfill('0') << std::setw(8) << lparam;
-		oss << "   WP: 0x" << std::hex << std::setfill('0') << std::setw(8) << wparam << std::endl;
+		oss << "[lp: 0x" << std::hex << std::setfill('0') << std::setw(8) << lparam << "; ";
+		oss << "wp: 0x" << std::hex << std::setfill('0') << std::setw(8) << wparam << "]\n";
 
 		return oss.str();
 	}

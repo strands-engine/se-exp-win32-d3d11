@@ -12,11 +12,11 @@ namespace d3dexp
 	{
 		undefined		= 0x00,
 		error			= 0x01,
-		lmouse  		= 0x02,
-		rmouse			= 0x03,
-		mmouse			= 0x04,
-		x1mouse			= 0x05,
-		x2mouse			= 0x06,
+		lmb  			= 0x02,
+		rmb				= 0x03,
+		mmb				= 0x04,
+		x1mb			= 0x05,
+		x2mb			= 0x06,
 		// UNUSED       = 0x07,
 
 		backspace		= 0x08,

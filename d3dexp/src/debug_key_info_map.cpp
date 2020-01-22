@@ -12,11 +12,11 @@ namespace d3dexp
 		m_map({
 			REGISTER_KEY_INFO(undefined,		"[???]"),
 			REGISTER_KEY_INFO(error,			"[ERR]"),
-			REGISTER_KEY_INFO(lmouse,			"[LMB]"),
-			REGISTER_KEY_INFO(rmouse,			"[RMB]"),
-			REGISTER_KEY_INFO(mmouse,			"[MMB]"),
-			REGISTER_KEY_INFO(x1mouse,			"[X1M]"),
-			REGISTER_KEY_INFO(x2mouse,			"[X2M]"),
+			REGISTER_KEY_INFO(lmb,				"[LMB]"),
+			REGISTER_KEY_INFO(rmb,				"[RMB]"),
+			REGISTER_KEY_INFO(mmb,				"[MMB]"),
+			REGISTER_KEY_INFO(x1mb,				"[X1M]"),
+			REGISTER_KEY_INFO(x2mb,				"[X2M]"),
 			REGISTER_KEY_INFO(backspace,		"[<--]"),
 			REGISTER_KEY_INFO(delete_,			"[DEL]"),
 			REGISTER_KEY_INFO(enter,			"[<-']"),
@@ -143,9 +143,9 @@ namespace d3dexp
 			REGISTER_KEY_INFO(help,				"[HLP]"),
 			REGISTER_KEY_INFO(apps,				"[APP]"),
 			REGISTER_KEY_INFO(sleep,			"[SLP]"),
-			REGISTER_KEY_INFO(numsep,			"[SEP]")})
+			REGISTER_KEY_INFO(numsep,			"[SEP]"),
+			{ static_cast<key_t>(0xff), {"", "[   ]"}}})
 	{}
-
 
 	std::string debug_key_info_map::operator() (char const * context, key_t key) const noexcept
 	{
@@ -166,4 +166,27 @@ namespace d3dexp
 
 		return oss.str();
 	}
+
+	std::string debug_key_info_map::operator() (char const* context, key_t key, std::int16_t x_pos, std::int16_t y_pos) const noexcept
+	{
+		constexpr int first_column_width = 15;
+		constexpr int second_column_width = 15;
+		const auto iter = m_map.find(key);
+
+		std::ostringstream oss;
+		if (iter != m_map.end())
+		{
+			oss << std::left << std::setw(first_column_width) << context << iter->second.second << ' ' << std::left << std::setw(second_column_width) << iter->second.first;
+			oss << std::left << "pos = (" << std::right << std::setw(5) << x_pos << ", " << std::right << std::setw(5) << y_pos << ")\n";
+		}
+		else
+		{
+			std::ostringstream padss;
+			padss << "Unknown key code: 0x" << std::hex << static_cast<std::uint32_t>(key) << '\n';
+			oss << std::left << std::setw(first_column_width) << padss.str() << std::right;
+		}
+
+		return oss.str();
+	}
+
 }

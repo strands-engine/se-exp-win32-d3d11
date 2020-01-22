@@ -14,6 +14,7 @@ namespace d3dexp {
 	public:
 		debug_key_info_map() noexcept;
 		std::string operator() (char const * context, key_t key) const noexcept;
+		std::string operator() (char const* context, key_t key, std::int16_t x_pos, std::int16_t y_pos) const noexcept;
 
 	private:
 		std::unordered_map<key_t, std::pair<std::string, std::string>> m_map;

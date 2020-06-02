@@ -147,7 +147,7 @@ namespace d3dexp
 			{ static_cast<key_t>(0xff), {"", "[   ]"}}})
 	{}
 
-	std::string debug_key_info_map::operator() (char const * context, key_t key) const noexcept
+	[[nodiscard]] std::string debug_key_info_map::operator() (char const * context, key_t key) const noexcept
 	{
 		constexpr int first_column_width = 15;
 		const auto iter = m_map.find(key);
@@ -167,7 +167,7 @@ namespace d3dexp
 		return oss.str();
 	}
 
-	std::string debug_key_info_map::operator() (char const* context, key_t key, std::int16_t x_pos, std::int16_t y_pos) const noexcept
+	[[nodiscard]] std::string debug_key_info_map::operator() (char const* context, key_t key, std::int16_t x_pos, std::int16_t y_pos) const noexcept
 	{
 		constexpr int first_column_width = 15;
 		constexpr int second_column_width = 15;

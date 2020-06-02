@@ -4,7 +4,7 @@
 
 namespace d3dexp
 {
-	key_t win32_key_code_converter::convert(WPARAM wparam, const LPARAM lparam) const noexcept
+	[[nodiscard]] key_t win32_key_code_converter::convert(WPARAM wparam, LPARAM lparam) const noexcept
 	{
 		bool is_extended = (lparam & 0x01000000) != 0;
 

@@ -202,7 +202,7 @@ namespace d3dexp {
 			REGISTER_MESSAGE(WM_KEYF1)})
 	{}
 
-	std::string win32_debug_message_map::operator() (DWORD msg_id, WPARAM wparam, LPARAM lparam) const noexcept
+	[[nodiscard]] std::string win32_debug_message_map::operator() (DWORD msg_id, WPARAM wparam, LPARAM lparam) const noexcept
 	{
 		constexpr int first_column_width = 36;
 		const auto iter = m_map.find(msg_id);

@@ -1,8 +1,8 @@
 #pragma once
 
-// imported from old strands code
+// NOTE: imported from old strands code
 
-#include <Windows.h>
+#include "win32_header_wrapper.h"
 
 #include "input_types.h"
 
@@ -13,16 +13,16 @@ namespace d3dexp
 	public:
 		win32_key_code_converter() noexcept = default;
 
-		win32_key_code_converter(const win32_key_code_converter&) = delete;
+		win32_key_code_converter(win32_key_code_converter const&) = delete;
 		win32_key_code_converter(win32_key_code_converter&&) = delete;
 
-		win32_key_code_converter& operator= (const win32_key_code_converter&) = delete;
+		win32_key_code_converter& operator= (win32_key_code_converter const&) = delete;
 		win32_key_code_converter& operator= (win32_key_code_converter&&) = delete;
 
 		~win32_key_code_converter() noexcept = default;
 
-
-		key_t convert(WPARAM wparam, const LPARAM lparam) const noexcept;
+	public:
+		[[nodiscard]] key_t convert(WPARAM wparam, LPARAM lparam) const noexcept;
 
 
 	private:

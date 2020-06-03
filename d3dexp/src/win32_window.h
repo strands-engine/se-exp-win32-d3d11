@@ -33,7 +33,7 @@ namespace d3dexp {
 		};
 
 	public:
-		explicit win32_window(int width, int height, char const* name) noexcept;
+		explicit win32_window(int width, int height, char const* name);
 
 		win32_window(win32_window const&) = delete;
 		win32_window(win32_window&&) = delete;

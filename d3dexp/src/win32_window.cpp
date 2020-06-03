@@ -3,6 +3,7 @@
 #include <windowsx.h>
 #include "win32_key_code_converter.h"
 #include "win32_debug_message_provider.h"
+#include "win32_exception.h"
 
 namespace d3dexp
 {
@@ -36,7 +37,7 @@ namespace d3dexp
 		wc.hIconSm = nullptr;
 
 		RegisterClassEx(&wc);
-		// TODO: error handling ???
+		// error handling - currently skipped due to the way the singleton instance is resolved
 	}
 
 	win32_window::win32_window_class::~win32_window_class() noexcept
@@ -46,7 +47,7 @@ namespace d3dexp
 
 	// win32_window implementation
 
-	win32_window::win32_window(int width, int height, char const* title) noexcept
+	win32_window::win32_window(int width, int height, char const* title)
 		: m_cli_width(width), m_cli_height(height)
 	{
 		// choices for window style
@@ -58,7 +59,11 @@ namespace d3dexp
 		wnd_rect.right = m_cli_width + wnd_rect.left;
 		wnd_rect.top = 100;
 		wnd_rect.bottom = m_cli_height + wnd_rect.top;
-		AdjustWindowRect(&wnd_rect, style, FALSE);
+		auto is_ok = AdjustWindowRect(&wnd_rect, style, FALSE);
+		if (!is_ok)
+		{
+			RAISE_WIN32_LAST_ERROR();
+		}
 
 		// store adjusted window size
 		m_wnd_width = wnd_rect.right - wnd_rect.left;
@@ -70,11 +75,13 @@ namespace d3dexp
 		m_window_h = CreateWindow( win32_window_class::name(), title, style,
 			CW_USEDEFAULT, CW_USEDEFAULT, m_wnd_width, m_wnd_height,
 			nullptr, nullptr, win32_window_class::instance(), this);
-		// TODO: error handling ???
+		if (m_window_h == nullptr)
+		{
+			RAISE_WIN32_LAST_ERROR();
+		}
 
 		// show created window instance
 		ShowWindow(m_window_h, SW_SHOWDEFAULT);
-		// TODO: error handling ???
 	}
 
 	win32_window::~win32_window() noexcept

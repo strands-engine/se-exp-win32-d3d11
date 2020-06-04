@@ -5,6 +5,8 @@
 #include "win32_debug_message_provider.h"
 #include "win32_exception.h"
 
+#include "../resource.h"
+
 namespace d3dexp
 {
 
@@ -27,14 +29,14 @@ namespace d3dexp
 
 		wc.hInstance = instance();
 
-		wc.hIcon = nullptr;
+		wc.hIcon = load_icon_resource(IDI_ICON1, 32);
 		wc.hCursor = nullptr;
 		wc.hbrBackground = nullptr;
 		wc.lpszMenuName = nullptr;
 
 		wc.lpszClassName = name();
 
-		wc.hIconSm = nullptr;
+		wc.hIconSm = load_icon_resource(IDI_ICON1, 16);
 
 		RegisterClassEx(&wc);
 		// error handling - currently skipped due to the way the singleton instance is resolved
@@ -228,6 +230,9 @@ namespace d3dexp
 
 	}
 
-
+	HICON win32_window::win32_window_class::load_icon_resource(int resource_id, int size) noexcept
+	{
+		return static_cast<HICON>(LoadImage(instance(), MAKEINTRESOURCE(resource_id), IMAGE_ICON, size, size, 0));
+	}
 
 }

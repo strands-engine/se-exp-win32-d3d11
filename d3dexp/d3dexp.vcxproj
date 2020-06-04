@@ -92,6 +92,7 @@
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\d3d_exception.h" />
     <ClInclude Include="src\debug_key_info_map.h" />
     <ClInclude Include="src\input_types.h" />
@@ -101,6 +102,12 @@
     <ClInclude Include="src\win32_header_wrapper.h" />
     <ClInclude Include="src\win32_key_code_converter.h" />
     <ClInclude Include="src\win32_window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\directx.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="d3dexp.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

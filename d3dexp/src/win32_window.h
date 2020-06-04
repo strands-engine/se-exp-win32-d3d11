@@ -27,6 +27,9 @@ namespace d3dexp {
 			[[nodiscard]] static HINSTANCE instance() noexcept { return s_instance.m_app_instance_h; }
 
 		private:
+			[[nodiscard]] static HICON load_icon_resource(int icon_id, int size) noexcept;
+
+		private:
 			static constexpr char const* s_window_class_name = "oglexp_window_class";
 			static win32_window_class s_instance;
 			HINSTANCE m_app_instance_h;

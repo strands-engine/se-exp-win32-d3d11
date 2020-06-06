@@ -135,34 +135,52 @@ namespace d3dexp
 			PostQuitMessage(0);
 			return 0;
 
+			// KEYBOARD INPUT HANDLING
+
+		case WM_KILLFOCUS:
+			// prevent not clearing keyboard state when window focus changes
+			keyboard().clear_state();
+			break;
+
 		case WM_KEYDOWN:
+			if (!(lparam & 0x40000000) || keyboard().is_autorepeat_enabled())
+			{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_key_event("key down", s_kc_conv.convert(wparam, lparam)).c_str());
+				OutputDebugString(s_msg.for_key_event("key down", s_kc_conv.convert(wparam, lparam)).c_str());
 #endif // _DEBUG
+				keyboard().on_key_pressed(s_kc_conv.convert(wparam, lparam));
+			}
 			break;
 
 		case WM_KEYUP:
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_key_event("key up", s_kc_conv.convert(wparam, lparam)).c_str());
 #endif // _DEBUG
+			keyboard().on_key_released(s_kc_conv.convert(wparam, lparam));
 			break;
 
 		case WM_SYSKEYDOWN:
+			if (!(lparam & 0x40000000) || keyboard().is_autorepeat_enabled())
+			{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_key_event("sys key down", s_kc_conv.convert(wparam, lparam)).c_str());
+				OutputDebugString(s_msg.for_key_event("sys key down", s_kc_conv.convert(wparam, lparam)).c_str());
 #endif // _DEBUG
+				keyboard().on_key_pressed(s_kc_conv.convert(wparam, lparam));
+			}
 			break;
 
 		case WM_SYSKEYUP:
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_key_event("sys key up", s_kc_conv.convert(wparam, lparam)).c_str());
 #endif // _DEBUG
+			keyboard().on_key_released(s_kc_conv.convert(wparam, lparam));
 			break;
 
 		case WM_CHAR:
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_char_event(static_cast<char>(wparam)).c_str());
 #endif // _DEBUG
+			keyboard().on_char(static_cast<char>(wparam));
 			break;
 
 		case WM_LBUTTONDOWN:

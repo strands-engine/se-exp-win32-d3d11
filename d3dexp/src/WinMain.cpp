@@ -18,6 +18,11 @@ int CALLBACK WinMain(_In_ HINSTANCE instance_h, _In_opt_ HINSTANCE prev_instance
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+
+			if (window.keyboard().is_key_pressed(d3dexp::key_t::spacebar))
+			{
+				MessageBox(nullptr, "Awww!!!", "Space Bar was pressed!", MB_OK);
+			}
 		}
 
 		return result < 0 ? result : static_cast<int>(msg.wParam);

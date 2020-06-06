@@ -2,6 +2,8 @@
 
 #include "win32_header_wrapper.h"
 
+#include "win32_keyboard.h"
+
 namespace d3dexp {
 
 	class win32_window
@@ -46,6 +48,10 @@ namespace d3dexp {
 
 		~win32_window() noexcept;
 
+	public:
+		[[nodiscard]] win32_keyboard& keyboard() noexcept { return m_keyboard; }
+		[[nodiscard]] win32_keyboard const& keyboard() const noexcept { return m_keyboard; }
+
 	private:
 		static LRESULT CALLBACK handle_message_setup(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept;
 		static LRESULT CALLBACK handle_message_adapter(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept;
@@ -57,6 +63,8 @@ namespace d3dexp {
 		int m_wnd_width;
 		int m_wnd_height;
 		HWND m_window_h;
+
+		win32_keyboard m_keyboard;
 	};
 
 }

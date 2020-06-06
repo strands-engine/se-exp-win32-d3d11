@@ -87,6 +87,7 @@
     <ClCompile Include="src\win32_debug_message_map.cpp" />
     <ClCompile Include="src\win32_debug_message_provider.cpp" />
     <ClCompile Include="src\win32_exception.cpp" />
+    <ClCompile Include="src\win32_keyboard.cpp" />
     <ClCompile Include="src\win32_key_code_converter.cpp" />
     <ClCompile Include="src\win32_window.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
@@ -100,6 +101,7 @@
     <ClInclude Include="src\win32_debug_message_provider.h" />
     <ClInclude Include="src\win32_exception.h" />
     <ClInclude Include="src\win32_header_wrapper.h" />
+    <ClInclude Include="src\win32_keyboard.h" />
     <ClInclude Include="src\win32_key_code_converter.h" />
     <ClInclude Include="src\win32_window.h" />
   </ItemGroup>

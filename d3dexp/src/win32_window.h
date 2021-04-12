@@ -3,6 +3,7 @@
 #include "win32_header_wrapper.h"
 
 #include "win32_keyboard.h"
+#include "win32_mouse.h"
 
 namespace d3dexp {
 
@@ -52,6 +53,9 @@ namespace d3dexp {
 		[[nodiscard]] win32_keyboard& keyboard() noexcept { return m_keyboard; }
 		[[nodiscard]] win32_keyboard const& keyboard() const noexcept { return m_keyboard; }
 
+		[[nodiscard]] win32_mouse& mouse() noexcept { return m_mouse; }
+		[[nodiscard]] win32_mouse const& mouse() const noexcept { return m_mouse; }
+
 	private:
 		static LRESULT CALLBACK handle_message_setup(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept;
 		static LRESULT CALLBACK handle_message_adapter(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept;
@@ -65,6 +69,7 @@ namespace d3dexp {
 		HWND m_window_h;
 
 		win32_keyboard m_keyboard;
+		win32_mouse m_mouse;
 	};
 
 }

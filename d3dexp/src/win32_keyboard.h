@@ -23,7 +23,7 @@ namespace d3dexp {
 			};
 
 		public:
-			win32_keyboard_event() noexcept : m_action(action_t::invalid), m_key(key_t::undefined) {}
+			win32_keyboard_event() noexcept = default;
 			win32_keyboard_event(action_t action, key_t key) noexcept : m_action(action), m_key(key) {}
 
 		public:
@@ -34,12 +34,12 @@ namespace d3dexp {
 			[[nodiscard]] bool is_valid() const noexcept { return m_action != action_t::invalid; }
 
 		private:
-			action_t m_action;
-			key_t m_key;
+			action_t m_action = action_t::invalid;
+			key_t m_key = key_t::undefined;
 		};
 
 	public:
-		win32_keyboard() noexcept {};
+		win32_keyboard() noexcept = default;
 
 		win32_keyboard(win32_keyboard const&) = delete;
 		win32_keyboard(win32_keyboard&&) = delete;

@@ -91,6 +91,7 @@
     <ClCompile Include="src\win32_key_code_converter.cpp" />
     <ClCompile Include="src\win32_window.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
+    <ClCompile Include="src\win32_mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="src\win32_keyboard.h" />
     <ClInclude Include="src\win32_key_code_converter.h" />
     <ClInclude Include="src\win32_window.h" />
+    <ClInclude Include="src\win32_mouse.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\directx.ico" />

@@ -19,12 +19,7 @@ namespace d3dexp
 	{
 		return (*key_map_p)(context, key);
 	}
-	
-	[[nodiscard]] std::string win32_debug_message_provider::for_mouse_event(char const * context, std::int16_t x_pos, std::int16_t y_pos, key_t mb /* static_cast<key_t>(0xff) */) const noexcept
-	{
-		return (*key_map_p)(context, mb, x_pos, y_pos);
-	}
-	
+		
 	[[nodiscard]] std::string win32_debug_message_provider::for_char_event(char character) const noexcept
 	{
 		constexpr int first_column_width = 15;
@@ -34,6 +29,20 @@ namespace d3dexp
 
 		return oss.str();
 	}
+
+	[[nodiscard]] std::string win32_debug_message_provider::for_mouse_event(char const* context, std::int16_t x_pos, std::int16_t y_pos, key_t mb /* static_cast<key_t>(0xff) */) const noexcept
+	{
+		return (*key_map_p)(context, mb, x_pos, y_pos);
+	}
+
+	[[nodiscard]] std::string win32_debug_message_provider::for_mouse_wheel_event(std::int16_t x_pos, std::int16_t y_pos, std::int16_t delta) const noexcept
+	{
+		std::ostringstream oss;
+		oss << "; wheel delta = " << delta << '\n';
+		const auto base = (*key_map_p)("mouse wheel", static_cast<key_t>(0xff), x_pos, y_pos);
+		return base.substr(0, base.length() - 1) + oss.str();
+	}
+
 
 	[[nodiscard]] std::string win32_debug_message_provider::for_generic_event(DWORD msg_id, WPARAM wparam, LPARAM lparam) const noexcept
 	{

@@ -26,8 +26,9 @@ namespace d3dexp
 
 	public:
 		[[nodiscard]] std::string for_key_event(char const * context, key_t key) const noexcept;
-		[[nodiscard]] std::string for_mouse_event(char const * context, std::int16_t x_pos, std::int16_t y_pos, key_t mb = static_cast<key_t>(0xff)) const noexcept;
 		[[nodiscard]] std::string for_char_event(char character) const noexcept;
+		[[nodiscard]] std::string for_mouse_event(char const* context, std::int16_t x_pos, std::int16_t y_pos, key_t mb = static_cast<key_t>(0xff)) const noexcept;
+		[[nodiscard]] std::string for_mouse_wheel_event(std::int16_t x_pos, std::int16_t y_pos, std::int16_t delta) const noexcept;
 
 		[[nodiscard]] std::string for_generic_event(DWORD msg_id, WPARAM wparam, LPARAM lparam) const noexcept;
 

@@ -132,17 +132,21 @@ namespace d3dexp
 		switch (msg_id)
 		{
 		case WM_CLOSE:
+		{
 			PostQuitMessage(0);
 			return 0;
-
+		}
 			// KEYBOARD INPUT HANDLING
 
 		case WM_KILLFOCUS:
+		{
 			// prevent not clearing keyboard state when window focus changes
 			keyboard().clear_state();
 			break;
+		}
 
 		case WM_KEYDOWN:
+		{
 			if (!(lparam & 0x40000000) || keyboard().is_autorepeat_enabled())
 			{
 #ifdef _DEBUG
@@ -151,15 +155,19 @@ namespace d3dexp
 				keyboard().on_key_pressed(s_kc_conv.convert(wparam, lparam));
 			}
 			break;
+		}
 
 		case WM_KEYUP:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_key_event("key up", s_kc_conv.convert(wparam, lparam)).c_str());
 #endif // _DEBUG
 			keyboard().on_key_released(s_kc_conv.convert(wparam, lparam));
 			break;
+		}
 
 		case WM_SYSKEYDOWN:
+		{
 			if (!(lparam & 0x40000000) || keyboard().is_autorepeat_enabled())
 			{
 #ifdef _DEBUG
@@ -168,81 +176,141 @@ namespace d3dexp
 				keyboard().on_key_pressed(s_kc_conv.convert(wparam, lparam));
 			}
 			break;
+		}
 
 		case WM_SYSKEYUP:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_key_event("sys key up", s_kc_conv.convert(wparam, lparam)).c_str());
 #endif // _DEBUG
 			keyboard().on_key_released(s_kc_conv.convert(wparam, lparam));
 			break;
+		}
 
 		case WM_CHAR:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_char_event(static_cast<char>(wparam)).c_str());
 #endif // _DEBUG
 			keyboard().on_char(static_cast<char>(wparam));
 			break;
+		}
 
 		case WM_LBUTTONDOWN:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_mouse_event("left btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::lmb).c_str());
 #endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			mouse().on_lmb_pressed(pts.x, pts.y);
 			break;
+		}
 
 		case WM_LBUTTONUP:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_mouse_event("left btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::lmb).c_str());
 #endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			mouse().on_lmb_released(pts.x, pts.y);
 			break;
+		}
 
 		case WM_RBUTTONDOWN:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_mouse_event("right btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::rmb).c_str());
 #endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			mouse().on_rmb_pressed(pts.x, pts.y);
 			break;
+		}
 
 		case WM_RBUTTONUP:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_mouse_event("right btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::rmb).c_str());
 #endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			mouse().on_rmb_released(pts.x, pts.y);
 			break;
+		}
 
 		case WM_MBUTTONDOWN:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_mouse_event("mid btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::mmb).c_str());
 #endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			mouse().on_mmb_pressed(pts.x, pts.y);
 			break;
+		}
 
 		case WM_MBUTTONUP:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_mouse_event("mid btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::mmb).c_str());
 #endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			mouse().on_mmb_released(pts.x, pts.y);
 			break;
+		}
 
 		case WM_XBUTTONDOWN:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_mouse_event("x btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::x1mb).c_str());
 #endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			mouse().on_xmb_pressed(pts.x, pts.y);
 			break;
+		}
 
 		case WM_XBUTTONUP:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_mouse_event("x btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::x1mb).c_str());
 #endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			mouse().on_xmb_released(pts.x, pts.y);
 			break;
+		}
+
+		case WM_MOUSEWHEEL:
+		{
+#ifdef _DEBUG
+			OutputDebugString(s_msg.for_mouse_wheel_event(GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), GET_WHEEL_DELTA_WPARAM(wparam)).c_str());
+#endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			const auto wheel_delta = GET_WHEEL_DELTA_WPARAM(wparam);
+			if (wheel_delta > 0)
+			{
+				mouse().on_wheel_up(pts.x, pts.y);
+			}
+			else if (wheel_delta < 0)
+			{
+				mouse().on_wheel_down(pts.x, pts.y);
+			}
+			break;
+		}
 
 		case WM_MOUSEMOVE:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_mouse_event("mouse move", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam)).c_str());
 #endif // _DEBUG
+			const POINTS pts = MAKEPOINTS(lparam);
+			mouse().on_move(pts.x, pts.y);
 			break;
+		}
 
 		default:
+		{
 #ifdef _DEBUG
 			OutputDebugString(s_msg.for_generic_event(msg_id, wparam, lparam).c_str());
 #endif // _DEBUG
 			break;
-
+		}
 		}
 		return DefWindowProc(wnd_h, msg_id, wparam, lparam);
 

@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "win32_header_wrapper.h"
 #include "win32_window.h"
 #include "d3d_exception.h"
@@ -22,6 +24,17 @@ int CALLBACK WinMain(_In_ HINSTANCE instance_h, _In_opt_ HINSTANCE prev_instance
 			if (window.keyboard().is_key_pressed(d3dexp::key_t::spacebar))
 			{
 				MessageBox(nullptr, "Awww!!!", "Space Bar was pressed!", MB_OK);
+			}
+
+			while (!window.mouse().is_queue_empty())
+			{
+				const auto event = window.mouse().read();
+				if (event.action() == d3dexp::win32_mouse::win32_mouse_event::action_t::move)
+				{
+					std::ostringstream oss;
+					oss << "DEBUG: Mouse position: (" << event.x_pos() << ", " << event.y_pos() << ")";
+					window.set_title(oss.str());
+				}
 			}
 		}
 

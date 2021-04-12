@@ -50,11 +50,15 @@ namespace d3dexp {
 		~win32_window() noexcept;
 
 	public:
+		[[nodiscard]] std::string const& title() const noexcept { return m_title; }
+
 		[[nodiscard]] win32_keyboard& keyboard() noexcept { return m_keyboard; }
 		[[nodiscard]] win32_keyboard const& keyboard() const noexcept { return m_keyboard; }
 
 		[[nodiscard]] win32_mouse& mouse() noexcept { return m_mouse; }
 		[[nodiscard]] win32_mouse const& mouse() const noexcept { return m_mouse; }
+
+		void set_title(std::string const& title);
 
 	private:
 		static LRESULT CALLBACK handle_message_setup(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept;
@@ -62,6 +66,7 @@ namespace d3dexp {
 		LRESULT handle_message(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept;
 
 	private:
+		std::string m_title;
 		int m_cli_width;
 		int m_cli_height;
 		int m_wnd_width;

@@ -50,7 +50,7 @@ namespace d3dexp
 	// win32_window implementation
 
 	win32_window::win32_window(int width, int height, char const* title)
-		: m_cli_width(width), m_cli_height(height)
+		: m_title(title), m_cli_width(width), m_cli_height(height)
 	{
 		// choices for window style
 		const DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
@@ -89,6 +89,16 @@ namespace d3dexp
 	win32_window::~win32_window() noexcept
 	{
 		DestroyWindow(m_window_h);
+	}
+
+	void win32_window::set_title(std::string const& title)
+	{
+		const auto is_ok = SetWindowText(m_window_h, title.c_str());
+		if (!is_ok)
+		{
+			RAISE_WIN32_LAST_ERROR();
+		}
+		m_title = title;
 	}
 
 	LRESULT CALLBACK win32_window::handle_message_setup(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept

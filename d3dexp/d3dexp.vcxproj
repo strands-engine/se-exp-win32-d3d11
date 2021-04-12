@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClCompile Include="src\d3d_exception.cpp" />
     <ClCompile Include="src\debug_key_info_map.cpp" />
+    <ClCompile Include="src\win32_app.cpp" />
     <ClCompile Include="src\win32_debug_message_map.cpp" />
     <ClCompile Include="src\win32_debug_message_provider.cpp" />
     <ClCompile Include="src\win32_exception.cpp" />
@@ -98,6 +99,7 @@
     <ClInclude Include="src\d3d_exception.h" />
     <ClInclude Include="src\debug_key_info_map.h" />
     <ClInclude Include="src\input_types.h" />
+    <ClInclude Include="src\win32_app.h" />
     <ClInclude Include="src\win32_debug_message_map.h" />
     <ClInclude Include="src\win32_debug_message_provider.h" />
     <ClInclude Include="src\win32_exception.h" />

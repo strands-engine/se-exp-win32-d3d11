@@ -1,5 +1,6 @@
 #pragma once
 
+#include "timer.h"
 #include "win32_window.h"
 
 namespace d3dexp
@@ -25,6 +26,6 @@ namespace d3dexp
 
 	private:
 		win32_window m_window;
-
+		timer m_timer;
 	};
 }

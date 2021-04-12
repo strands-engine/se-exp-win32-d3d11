@@ -101,6 +101,30 @@ namespace d3dexp
 		m_title = title;
 	}
 
+	std::optional<int> win32_window::process_messages()
+	{
+		auto msg = MSG{};
+
+		// consume messages as long as they are in queue
+		// NOTE: check PeekMessage error handling
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			// if quit message is encountered, return optional return code
+			if (msg.message == WM_QUIT)
+			{
+				return static_cast<int>(msg.wParam);
+			}
+
+			// if other messages are present, translate them (to spawn WM_CHAR messages) and dispatch
+
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		// return empty optional if there are no more messages (and we are not quitting)
+		return {};
+	}
+
 	LRESULT CALLBACK win32_window::handle_message_setup(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept
 	{
 		// use lparam given during window instance creation to store the pointer to actual win32_window class instance

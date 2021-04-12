@@ -2,6 +2,8 @@
 
 #include "win32_header_wrapper.h"
 
+#include <optional>
+
 #include "win32_keyboard.h"
 #include "win32_mouse.h"
 
@@ -61,6 +63,8 @@ namespace d3dexp {
 		[[nodiscard]] win32_mouse const& mouse() const noexcept { return m_mouse; }
 
 		void set_title(std::string const& title);
+
+		static std::optional<int> process_messages();
 
 	private:
 		static LRESULT CALLBACK handle_message_setup(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept;

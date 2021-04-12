@@ -75,6 +75,20 @@ namespace d3dexp {
 		trim_queue();
 	}
 
+	void win32_mouse::on_leave() noexcept
+	{
+		m_is_in_window = false;
+		m_queue.emplace(win32_mouse::win32_mouse_event{ win32_mouse::win32_mouse_event::action_t::leave, *this });
+		trim_queue();
+	}
+
+	void win32_mouse::on_enter() noexcept
+	{
+		m_is_in_window = true;
+		m_queue.emplace(win32_mouse::win32_mouse_event{ win32_mouse::win32_mouse_event::action_t::enter, *this });
+		trim_queue();
+	}
+
 	void win32_mouse::on_wheel_down(int x, int y) noexcept
 	{
 		m_queue.emplace(win32_mouse::win32_mouse_event{ win32_mouse::win32_mouse_event::action_t::wheel_down, *this });

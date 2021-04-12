@@ -310,7 +310,37 @@ namespace d3dexp
 			OutputDebugString(s_msg.for_mouse_event("mouse move", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam)).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
-			mouse().on_move(pts.x, pts.y);
+
+			// mouse is in client region
+			if (pts.x >= 0 && pts.x < width() && pts.y >= 0 && pts.y < height())
+			{
+				// raise move event 
+				mouse().on_move(pts.x, pts.y);
+				
+				// if previously outside the window - capture and raise enter event
+				if (!mouse().is_in_window())
+				{
+					SetCapture(m_window_h);
+					mouse().on_enter();
+				}
+			}
+
+			// mouse is outside client region
+			else 
+			{
+				// if any mouse button is pressed, then maintain capture 
+				if (wparam & (MK_LBUTTON | MK_RBUTTON | MK_MBUTTON | MK_XBUTTON1 | MK_XBUTTON2))
+				{
+					mouse().on_move(pts.x, pts.y);
+				}
+
+				// otherwise, release capture and raise leave event
+				else
+				{
+					ReleaseCapture();
+					mouse().on_leave();
+				}
+			}
 			break;
 		}
 

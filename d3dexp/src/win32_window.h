@@ -51,6 +51,8 @@ namespace d3dexp {
 
 	public:
 		[[nodiscard]] std::string const& title() const noexcept { return m_title; }
+		[[nodiscard]] int width() const noexcept { return m_cli_width; }
+		[[nodiscard]] int height() const noexcept { return m_cli_height; }
 
 		[[nodiscard]] win32_keyboard& keyboard() noexcept { return m_keyboard; }
 		[[nodiscard]] win32_keyboard const& keyboard() const noexcept { return m_keyboard; }

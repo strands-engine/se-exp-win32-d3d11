@@ -29,7 +29,11 @@ int CALLBACK WinMain(_In_ HINSTANCE instance_h, _In_opt_ HINSTANCE prev_instance
 			while (!window.mouse().is_queue_empty())
 			{
 				const auto event = window.mouse().read();
-				if (event.action() == d3dexp::win32_mouse::win32_mouse_event::action_t::move)
+				if (event.action() == d3dexp::win32_mouse::win32_mouse_event::action_t::leave)
+				{
+					window.set_title("DEBUG: Mouse released from capture.");
+				}
+				else if (event.action() == d3dexp::win32_mouse::win32_mouse_event::action_t::move)
 				{
 					std::ostringstream oss;
 					oss << "DEBUG: Mouse position: (" << event.x_pos() << ", " << event.y_pos() << ")";

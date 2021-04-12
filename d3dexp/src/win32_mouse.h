@@ -27,6 +27,8 @@ namespace d3dexp {
 				wheel_up,
 				wheel_down,
 				move,
+				enter,
+				leave,
 				invalid
 			};
 
@@ -79,6 +81,8 @@ namespace d3dexp {
 		[[nodiscard]] bool is_rmb_pressed() const noexcept { return m_is_rmb_pressed; }
 		[[nodiscard]] bool is_mmb_pressed() const noexcept { return m_is_mmb_pressed; }
 		[[nodiscard]] bool is_xmb_pressed() const noexcept { return m_is_xmb_pressed; }
+		
+		[[nodiscard]] bool is_in_window() const noexcept { return m_is_in_window; }
 
 		[[nodiscard]] std::pair<int, int> pos() { return std::make_pair(m_x, m_y); }
 		[[nodiscard]] int x_pos() { return m_x; }
@@ -105,6 +109,9 @@ namespace d3dexp {
 		void on_wheel_up(int x, int y) noexcept;
 		void on_wheel_down(int x, int y) noexcept;
 
+		void on_leave() noexcept;
+		void on_enter() noexcept;
+
 		void on_move(int x, int y) noexcept;
 
 		void trim_queue() noexcept { while (m_queue.size() > MAX_QUEUE_SIZE) { m_queue.pop(); } }
@@ -120,6 +127,7 @@ namespace d3dexp {
 		bool m_is_rmb_pressed = false;
 		bool m_is_mmb_pressed = false;
 		bool m_is_xmb_pressed = false;
+		bool m_is_in_window = false;
 	};
 
 }

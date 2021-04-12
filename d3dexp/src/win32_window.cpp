@@ -292,15 +292,7 @@ namespace d3dexp
 			OutputDebugString(s_msg.for_mouse_wheel_event(GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), GET_WHEEL_DELTA_WPARAM(wparam)).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
-			const auto wheel_delta = GET_WHEEL_DELTA_WPARAM(wparam);
-			if (wheel_delta > 0)
-			{
-				mouse().on_wheel_up(pts.x, pts.y);
-			}
-			else if (wheel_delta < 0)
-			{
-				mouse().on_wheel_down(pts.x, pts.y);
-			}
+			mouse().on_wheel_delta(pts.x, pts.y, GET_WHEEL_DELTA_WPARAM(wparam));
 			break;
 		}
 

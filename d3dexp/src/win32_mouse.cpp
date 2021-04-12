@@ -1,5 +1,7 @@
 #include "win32_mouse.h"
 
+#include <Windows.h>
+
 namespace d3dexp {
 
 	win32_mouse::win32_mouse_event win32_mouse::read() noexcept
@@ -75,6 +77,38 @@ namespace d3dexp {
 		trim_queue();
 	}
 
+	void win32_mouse::on_wheel_down(int x, int y) noexcept
+	{
+		m_queue.emplace(win32_mouse::win32_mouse_event{ win32_mouse::win32_mouse_event::action_t::wheel_down, *this });
+		trim_queue();
+	}
+
+	void win32_mouse::on_wheel_delta(int x, int y, int delta) noexcept
+	{
+#ifdef D3DEXP_SIMPLIFIED_MOUSE_WHEEL
+		if (delta > 0)
+		{
+			on_wheel_up(x, y);
+		}
+		else if (delta < 0)
+		{
+			on_wheel_down(x, y);
+		}
+#endif
+		m_wheel_delta_residue += delta;
+
+		while (m_wheel_delta_residue >= WHEEL_DELTA)
+		{
+			m_wheel_delta_residue -= WHEEL_DELTA;
+			on_wheel_up(x, y);
+		}
+		while (m_wheel_delta_residue <= -WHEEL_DELTA)
+		{
+			m_wheel_delta_residue += WHEEL_DELTA;
+			on_wheel_down(x, y);
+		}
+	}
+
 	void win32_mouse::on_leave() noexcept
 	{
 		m_is_in_window = false;
@@ -86,12 +120,6 @@ namespace d3dexp {
 	{
 		m_is_in_window = true;
 		m_queue.emplace(win32_mouse::win32_mouse_event{ win32_mouse::win32_mouse_event::action_t::enter, *this });
-		trim_queue();
-	}
-
-	void win32_mouse::on_wheel_down(int x, int y) noexcept
-	{
-		m_queue.emplace(win32_mouse::win32_mouse_event{ win32_mouse::win32_mouse_event::action_t::wheel_down, *this });
 		trim_queue();
 	}
 

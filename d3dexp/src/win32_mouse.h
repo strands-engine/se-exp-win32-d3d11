@@ -108,6 +108,7 @@ namespace d3dexp {
 		
 		void on_wheel_up(int x, int y) noexcept;
 		void on_wheel_down(int x, int y) noexcept;
+		void on_wheel_delta(int x, int y, int delta) noexcept;
 
 		void on_leave() noexcept;
 		void on_enter() noexcept;
@@ -123,6 +124,7 @@ namespace d3dexp {
 		std::queue<win32_mouse_event> m_queue;
 		int m_x = 0;
 		int m_y = 0;
+		int m_wheel_delta_residue = 0;
 		bool m_is_lmb_pressed = false;
 		bool m_is_rmb_pressed = false;
 		bool m_is_mmb_pressed = false;

@@ -5,18 +5,18 @@
 
 namespace d3dexp
 {
-	class d3d_graphics
+	class d3d11_graphics
 	{
 	public:
-		d3d_graphics( HWND window_h );
+		d3d11_graphics( HWND window_h );
 
-		d3d_graphics(d3d_graphics const&) = delete;
-		d3d_graphics(d3d_graphics &&) = delete;
+		d3d11_graphics(d3d11_graphics const&) = delete;
+		d3d11_graphics(d3d11_graphics &&) = delete;
 
-		d3d_graphics& operator=(d3d_graphics const&) = delete;
-		d3d_graphics& operator=(d3d_graphics &&) = delete;
+		d3d11_graphics& operator=(d3d11_graphics const&) = delete;
+		d3d11_graphics& operator=(d3d11_graphics &&) = delete;
 
-		~d3d_graphics() noexcept;
+		~d3d11_graphics() noexcept;
 
 	public:
 		void clear_buffer(float r, float g, float b) noexcept;

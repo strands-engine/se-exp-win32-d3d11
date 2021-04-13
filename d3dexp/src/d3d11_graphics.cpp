@@ -1,11 +1,16 @@
-#include "d3d_graphics.h"
+#include "d3d11_graphics.h"
+
+#include "d3d11_exception.h"
 
 #pragma comment(lib, "d3d11.lib")
 
 namespace d3dexp
 {
-	d3d_graphics::d3d_graphics(HWND window_h)
+	d3d11_graphics::d3d11_graphics(HWND window_h)
 	{
+		// for error handling
+		auto hr = HRESULT{};
+
 		// configuring swap chain options
 		auto sc_desc = DXGI_SWAP_CHAIN_DESC{};
 
@@ -22,36 +27,48 @@ namespace d3dexp
 		sc_desc.BufferCount = 1;                                                      // single backbuffer (for double-buffering)
 		sc_desc.OutputWindow = window_h;                                              // setting our parent window as output
 		sc_desc.Windowed = TRUE;                                                      // use windowed mode (vs fullscreen; for now)
-		sc_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;                                // frontbuffer discarded after swap
+		sc_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;                                // frontbuffer discarded after swap (can be modernised to use advised flip model if buffer count is 2 or more)
 		sc_desc.Flags = 0;                                                            // no extra option flags
 
+		// set initialziation flags
+		auto flags = UINT{};
+#ifdef _DEBUG
+		flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif // !_DEBUG
+
 		// create: device, device context, front and back buffers and swap chain
-		D3D11CreateDeviceAndSwapChain(
-			nullptr,                       // use default graphics adapter (provide choice)
-			D3D_DRIVER_TYPE_HARDWARE,      // hardware driver type (vs software or reference)
-			nullptr,                       // relevant only for software drivers
-			0,                             // no extra flags
-			nullptr,                       // no preferred feture levels (use highest compatible)
-			0,                             // legth of previous array
-			D3D11_SDK_VERSION,             // SDK version used
-			&sc_desc,                      // swap chain settings (filled above)
-			&m_swap_chain_p,               // pointer to newly created swap chain COM object
-			&m_device_p,                   // pointer to newly created D3D device
-			nullptr,                       // not capturing actually used feature level (get later)
-			&m_context_p                   // pointer to newly created D3D (immediate) context			
+		RAISE_D3D11_ERROR_IF_FAILED(
+			D3D11CreateDeviceAndSwapChain(
+				nullptr,                       // use default graphics adapter (provide choice)
+				D3D_DRIVER_TYPE_HARDWARE,      // hardware driver type (vs software or reference)
+				nullptr,                       // relevant only for software drivers
+				flags,                         // extra device creation flags (set above)
+				nullptr,                       // no preferred feture levels (use highest compatible)
+				0,                             // legth of previous array
+				D3D11_SDK_VERSION,             // SDK version used
+				&sc_desc,                      // swap chain settings (filled above)
+				&m_swap_chain_p,               // pointer to newly created swap chain COM object
+				&m_device_p,                   // pointer to newly created D3D device
+				nullptr,                       // not capturing actually used feature level (get later)
+				&m_context_p                   // pointer to newly created D3D (immediate) context			
+			)
 		);
 
 		// acquiring pointer to render target view
 		// getting texture subresource of swap chain
 		ID3D11Resource* back_buffer_p = nullptr;
-		m_swap_chain_p->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&back_buffer_p));
+		RAISE_D3D11_ERROR_IF_FAILED(
+			m_swap_chain_p->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&back_buffer_p))
+		);
 #pragma warning(disable:6387)
-		m_device_p->CreateRenderTargetView(back_buffer_p, nullptr, &m_rtv_p);
+		RAISE_D3D11_ERROR_IF_FAILED(
+			m_device_p->CreateRenderTargetView(back_buffer_p, nullptr, &m_rtv_p)
+		);
 #pragma warning(default:6387)
 		if (back_buffer_p) back_buffer_p->Release();
 	}
 
-	d3d_graphics::~d3d_graphics() noexcept
+	d3d11_graphics::~d3d11_graphics() noexcept
 	{
 		if (m_rtv_p) m_rtv_p->Release();
 		if (m_context_p) m_context_p->Release();
@@ -59,17 +76,27 @@ namespace d3dexp
 		if (m_device_p) m_device_p->Release();
 	}
 
-	void d3d_graphics::clear_buffer(float r, float g, float b) noexcept
+	void d3d11_graphics::clear_buffer(float r, float g, float b) noexcept
 	{
 		// clear backbuffer to given colour
 		const float colour[] = { r, g, b, 1.0f };
 		m_context_p->ClearRenderTargetView(m_rtv_p, colour);
 	}
 
-	void d3d_graphics::present_frame()
+	void d3d11_graphics::present_frame()
 	{
 		// present backbuffer to the front (1 - sync rate 1 frame per screen refresh rate; 0 - no additional flags)
-		m_swap_chain_p->Present(1u, 0u);
+		auto hr = m_swap_chain_p->Present(1u, 0u);
+
+		// check for errors - especially removed device error
+		if (FAILED(hr))
+		{
+			if (hr == DXGI_ERROR_DEVICE_REMOVED)
+			{
+				RAISE_D3D11_DEVICE_REMOVED(m_device_p);
+			}
+			RAISE_D3D11_ERROR(hr);
+		}
 	}
 }
 

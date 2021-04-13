@@ -86,12 +86,30 @@ namespace d3dexp
 		ShowWindow(m_window_h, SW_SHOWDEFAULT);
 
 		// initialize D3D graphics object using handle to that window
-		m_graphics_p = std::make_unique<d3d_graphics>(m_window_h);
+		m_graphics_p = std::make_unique<d3d11_graphics>(m_window_h);
 	}
 
 	win32_window::~win32_window() noexcept
 	{
 		DestroyWindow(m_window_h);
+	}
+
+	d3d11_graphics& win32_window::graphics()
+	{
+		if (!m_graphics_p)
+		{
+			RAISE_NO_GRAPHICS_ERROR();
+		}
+		return *m_graphics_p;
+	}
+
+	d3d11_graphics const& win32_window::graphics() const
+	{
+		if (!m_graphics_p)
+		{
+			RAISE_NO_GRAPHICS_ERROR();
+		}
+		return *m_graphics_p;
 	}
 
 	void win32_window::set_title(std::string const& title)

@@ -3,9 +3,11 @@
 #include "win32_header_wrapper.h"
 
 #include <optional>
+#include <memory>
 
 #include "win32_keyboard.h"
 #include "win32_mouse.h"
+#include "d3d_graphics.h"
 
 namespace d3dexp {
 
@@ -62,6 +64,9 @@ namespace d3dexp {
 		[[nodiscard]] win32_mouse& mouse() noexcept { return m_mouse; }
 		[[nodiscard]] win32_mouse const& mouse() const noexcept { return m_mouse; }
 
+		[[nodiscard]] d3d_graphics& graphics() noexcept { return *m_graphics_p; }
+		[[nodiscard]] d3d_graphics const& graphics() const noexcept { return *m_graphics_p; }
+
 		void set_title(std::string const& title);
 
 		static std::optional<int> process_messages();
@@ -81,6 +86,7 @@ namespace d3dexp {
 
 		win32_keyboard m_keyboard;
 		win32_mouse m_mouse;
+		std::unique_ptr<d3d_graphics> m_graphics_p;
 	};
 
 }

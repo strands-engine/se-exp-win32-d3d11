@@ -84,6 +84,9 @@ namespace d3dexp
 
 		// show created window instance
 		ShowWindow(m_window_h, SW_SHOWDEFAULT);
+
+		// initialize D3D graphics object using handle to that window
+		m_graphics_p = std::make_unique<d3d_graphics>(m_window_h);
 	}
 
 	win32_window::~win32_window() noexcept

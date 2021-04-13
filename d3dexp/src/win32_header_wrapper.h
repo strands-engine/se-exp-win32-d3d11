@@ -54,3 +54,16 @@
 #define STRICT
 
 #include <Windows.h>
+
+#include <wrl/client.h>
+namespace d3dexp
+{
+	template <typename T>
+	using com_ptr = Microsoft::WRL::ComPtr<T>;
+
+	template <typename T>
+	void** to_pp(com_ptr<T>& p)
+	{
+		return reinterpret_cast<void**>(p.GetAddressOf());
+	}
+}

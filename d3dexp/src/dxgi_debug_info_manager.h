@@ -19,7 +19,7 @@ namespace d3dexp
 		dxgi_debug_info_manager& operator=(dxgi_debug_info_manager const&) = delete;
 		dxgi_debug_info_manager& operator=(dxgi_debug_info_manager &&) = delete;
 
-		~dxgi_debug_info_manager();
+		~dxgi_debug_info_manager() noexcept = default;
 
 	public:
 		std::vector<std::string> get_messages();
@@ -28,6 +28,6 @@ namespace d3dexp
 
 	private:
 		unsigned long long m_next_message_id = 0ul;
-		IDXGIInfoQueue* m_queue_p = nullptr;
+		com_ptr<IDXGIInfoQueue> m_queue_p = nullptr;
 	};
 }

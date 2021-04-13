@@ -31,18 +31,11 @@ namespace d3dexp
 		const auto dxgi_get_debug_interface = reinterpret_cast<DXGIGetDebugInterface>(dxgi_debug_interface_p);
 
 		// for error handling
-		auto hr = dxgi_get_debug_interface(__uuidof(IDXGIInfoQueue), reinterpret_cast<void**>(&m_queue_p));
+		auto hr = dxgi_get_debug_interface(__uuidof(IDXGIInfoQueue), to_pp(m_queue_p));
 		if (FAILED(hr))
 		{
 			RAISE_WIN32_ERROR(hr);
 		}
-#endif // !_DEBUG
-	}
-
-	dxgi_debug_info_manager::~dxgi_debug_info_manager()
-	{
-#ifdef _DEBUG
-		if (!m_queue_p) m_queue_p->Release();
 #endif // !_DEBUG
 	}
 

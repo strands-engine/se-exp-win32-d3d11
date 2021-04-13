@@ -56,31 +56,22 @@ namespace d3dexp
 
 		// acquiring pointer to render target view
 		// getting texture subresource of swap chain
-		ID3D11Resource* back_buffer_p = nullptr;
+		auto back_buffer_p = com_ptr<ID3D11Resource>{};
 		RAISE_D3D11_ERROR_IF_FAILED(
-			m_swap_chain_p->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&back_buffer_p))
+			m_swap_chain_p->GetBuffer(0, __uuidof(ID3D11Resource), to_pp(back_buffer_p))
 		);
-#pragma warning(disable:6387)
+//#pragma warning(disable:6387)
 		RAISE_D3D11_ERROR_IF_FAILED(
-			m_device_p->CreateRenderTargetView(back_buffer_p, nullptr, &m_rtv_p)
+			m_device_p->CreateRenderTargetView(back_buffer_p.Get(), nullptr, &m_rtv_p)
 		);
-#pragma warning(default:6387)
-		if (back_buffer_p) back_buffer_p->Release();
-	}
-
-	d3d11_graphics::~d3d11_graphics() noexcept
-	{
-		if (m_rtv_p) m_rtv_p->Release();
-		if (m_context_p) m_context_p->Release();
-		if (m_swap_chain_p) m_swap_chain_p->Release();
-		if (m_device_p) m_device_p->Release();
+//#pragma warning(default:6387)
 	}
 
 	void d3d11_graphics::clear_buffer(float r, float g, float b) noexcept
 	{
 		// clear backbuffer to given colour
 		const float colour[] = { r, g, b, 1.0f };
-		m_context_p->ClearRenderTargetView(m_rtv_p, colour);
+		m_context_p->ClearRenderTargetView(m_rtv_p.Get(), colour);
 	}
 
 	void d3d11_graphics::present_frame()

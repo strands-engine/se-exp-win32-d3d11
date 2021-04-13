@@ -40,13 +40,36 @@ namespace d3dexp
 			nullptr,                       // not capturing actually used feature level (get later)
 			&m_context_p                   // pointer to newly created D3D (immediate) context			
 		);
+
+		// acquiring pointer to render target view
+		// getting texture subresource of swap chain
+		ID3D11Resource* back_buffer_p = nullptr;
+		m_swap_chain_p->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&back_buffer_p));
+#pragma warning(disable:6387)
+		m_device_p->CreateRenderTargetView(back_buffer_p, nullptr, &m_rtv_p);
+#pragma warning(default:6387)
+		if (back_buffer_p) back_buffer_p->Release();
 	}
 
 	d3d_graphics::~d3d_graphics() noexcept
 	{
+		if (m_rtv_p) m_rtv_p->Release();
 		if (m_context_p) m_context_p->Release();
 		if (m_swap_chain_p) m_swap_chain_p->Release();
 		if (m_device_p) m_device_p->Release();
+	}
+
+	void d3d_graphics::clear_buffer(float r, float g, float b) noexcept
+	{
+		// clear backbuffer to given colour
+		const float colour[] = { r, g, b, 1.0f };
+		m_context_p->ClearRenderTargetView(m_rtv_p, colour);
+	}
+
+	void d3d_graphics::present_frame()
+	{
+		// present backbuffer to the front (1 - sync rate 1 frame per screen refresh rate; 0 - no additional flags)
+		m_swap_chain_p->Present(1u, 0u);
 	}
 }
 

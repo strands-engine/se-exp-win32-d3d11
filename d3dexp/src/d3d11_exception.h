@@ -21,6 +21,10 @@ namespace d3dexp
 		[[nodiscard]] std::string error_desc() const noexcept { return win32_exception::get_error_code_desc(m_error_code); }
 		[[nodiscard]] std::vector<std::string> dxgi_debug_info() const noexcept { return m_dxgi_error_info; }
 
+		[[nodiscard]] static bool has_new_debug_info() noexcept { return s_dxgi_debug_info_manager.has_new_messages(); }
+		
+		static void mark_debug_info() noexcept { return s_dxgi_debug_info_manager.mark(); }
+
 	private:
 		static dxgi_debug_info_manager s_dxgi_debug_info_manager;
 
@@ -41,5 +45,9 @@ namespace d3dexp
 
 // helper macros
 #define RAISE_D3D11_ERROR( error_code ) throw d3dexp::d3d11_exception(__LINE__, __FILE__, (error_code))
-#define RAISE_D3D11_ERROR_IF_FAILED(hrcall) if (FAILED(hr = (hrcall))) RAISE_D3D11_ERROR( hr )
+#define RAISE_D3D11_ERROR_IF_FAILED(hrcall) d3dexp::d3d11_exception::mark_debug_info(); if (FAILED(hr = (hrcall))) RAISE_D3D11_ERROR( hr )
 #define RAISE_D3D11_DEVICE_REMOVED(dev_p) throw d3dexp::d3d11_device_removed_exception(__LINE__, __FILE__, dev_p->GetDeviceRemovedReason())
+#define RAISE_D3D11_ON_DEBUG_INFO(call) \
+	d3dexp::d3d11_exception::mark_debug_info(); call; \
+	if (d3dexp::d3d11_exception::has_new_debug_info()) RAISE_D3D11_ERROR(0)
+

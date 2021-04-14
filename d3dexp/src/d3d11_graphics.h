@@ -3,8 +3,6 @@
 #include "win32_header_wrapper.h"
 #include <d3d11.h>
 
-
-
 namespace d3dexp
 {
 	class d3d11_graphics
@@ -25,7 +23,8 @@ namespace d3dexp
 
 		void present_frame();
 
-	private:
+		void debug_hello_triangle();
+
 	private:
 		com_ptr<ID3D11Device> m_device_p = nullptr;
 		com_ptr<ID3D11DeviceContext> m_context_p = nullptr;

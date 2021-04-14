@@ -35,6 +35,9 @@ namespace d3dexp
 		const float sinu = std::sinf(m_timer.peek()) / 2.0f + 0.5f;
 		m_window.graphics().clear_buffer(sinu, 1.0f, 1.0f - sinu);
 
+		// hello triangle basic test
+		m_window.graphics().debug_hello_triangle();
+
 		// present finalised frame from backbuffer to the front
 		m_window.graphics().present_frame();
 	}

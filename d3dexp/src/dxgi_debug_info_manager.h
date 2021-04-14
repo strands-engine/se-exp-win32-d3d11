@@ -22,9 +22,11 @@ namespace d3dexp
 		~dxgi_debug_info_manager() noexcept = default;
 
 	public:
+		[[nodiscard]] bool has_new_messages() const noexcept;
+
+		void mark() noexcept;
 		std::vector<std::string> get_messages();
 	
-		void mark() noexcept;
 
 	private:
 		unsigned long long m_next_message_id = 0ul;

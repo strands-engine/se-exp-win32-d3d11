@@ -75,6 +75,11 @@ namespace d3dexp
 		return messages;
 	}
 
+	bool dxgi_debug_info_manager::has_new_messages() const noexcept
+	{
+		return m_next_message_id < m_queue_p->GetNumStoredMessages(DXGI_DEBUG_ALL);
+	}
+
 	void dxgi_debug_info_manager::mark() noexcept
 	{
 #ifdef _DEBUG

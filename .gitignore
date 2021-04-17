@@ -6,3 +6,7 @@ bin/*
 obj/*
 .vs/*
 
+x64/*
+d3dexp/x64/*
+d3dexp-jpres/x64/*
+

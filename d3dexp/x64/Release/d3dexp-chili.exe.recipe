@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>D:\repos\se-exp-win32-d3d11\x64\Release\d3dexp-chili.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>D:\repos\se-exp-win32-d3d11\x64\Release\ps_hello_triangle.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\repos\se-exp-win32-d3d11\x64\Release\vs_hello_triangle.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

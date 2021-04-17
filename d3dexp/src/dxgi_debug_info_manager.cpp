@@ -77,7 +77,11 @@ namespace d3dexp
 
 	bool dxgi_debug_info_manager::has_new_messages() const noexcept
 	{
+#ifdef _DEBUG
 		return m_next_message_id < m_queue_p->GetNumStoredMessages(DXGI_DEBUG_ALL);
+#else // !_DEBUG
+		return false;
+#endif // !_DEBUG
 	}
 
 	void dxgi_debug_info_manager::mark() noexcept

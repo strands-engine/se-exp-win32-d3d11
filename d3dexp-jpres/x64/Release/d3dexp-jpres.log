@@ -1,0 +1,6 @@
+﻿  WinMain.cpp
+  Generating code
+  Finished generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 1 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  d3dexp-jpres.vcxproj -> D:\repos\se-exp-win32-d3d11\x64\Release\d3dexp-jpres.exe

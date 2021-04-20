@@ -191,7 +191,8 @@ namespace d3dexp
 			PostQuitMessage(0);
 			return 0;
 		}
-			// KEYBOARD INPUT HANDLING
+
+		// KEYBOARD AND MOUSE INPUT HANDLING
 
 		case WM_KILLFOCUS:
 		{

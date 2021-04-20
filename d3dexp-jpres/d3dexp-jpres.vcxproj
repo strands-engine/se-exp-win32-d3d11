@@ -149,15 +149,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\error_logger.cpp" />
     <ClCompile Include="src\string_converter.cpp" />
     <ClCompile Include="src\win32_window.cpp" />
+    <ClCompile Include="src\win32_window_container.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\error_logger.h" />
     <ClInclude Include="src\string_converter.h" />
     <ClInclude Include="src\win32_window.h" />
+    <ClInclude Include="src\win32_window_container.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

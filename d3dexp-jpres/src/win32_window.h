@@ -5,6 +5,8 @@
 
 namespace d3dexp
 {
+	class win32_window_container;
+
 	class win32_window
 	{
 	public:
@@ -21,7 +23,7 @@ namespace d3dexp
 	public:
 		[[nodiscard]] bool is_initialized() const noexcept { return m_window_h != NULL; }
 
-		bool initialize(HINSTANCE instance_h, std::string title, std::string class_name, int width, int height) noexcept;
+		bool initialize(win32_window_container * wc_p, HINSTANCE instance_h, std::string title, std::string class_name, int width, int height) noexcept;
 
 		bool process_messages() noexcept;
 

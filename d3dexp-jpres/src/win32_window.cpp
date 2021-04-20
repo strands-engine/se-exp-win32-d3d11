@@ -3,6 +3,8 @@
 #include "string_converter.h"
 #include "error_logger.h"
 
+#include "win32_window_container.h"
+
 namespace d3dexp
 {
 	win32_window::~win32_window() noexcept
@@ -14,7 +16,7 @@ namespace d3dexp
 		}
 	}
 
-	bool win32_window::initialize(HINSTANCE instance_h, std::string title, std::string class_name, int width, int height) noexcept
+	bool win32_window::initialize(win32_window_container * wc_p, HINSTANCE instance_h, std::string title, std::string class_name, int width, int height) noexcept
 	{
 		m_instance_h = instance_h;
 
@@ -41,7 +43,7 @@ namespace d3dexp
 			NULL,                                      // handle to parent window of this window (here none, as it is main window)
 			NULL,                                      // handle to resource representing window menu (unused)
 			m_instance_h,                              // handle to the instance of application owning that window
-			nullptr                                    // pointer to extra data passed to window (currently unused)
+			wc_p                                       // pointer to extra data passed to window (here: pointer to encompassing window container object)
 		);
 
 		// checking and handling errors in window creation
@@ -84,12 +86,62 @@ namespace d3dexp
 		return true;
 	}
 
+	LRESULT CALLBACK window_proc_redirect(HWND window_h, UINT msg, WPARAM wparam, LPARAM lparam)
+	{
+		switch (msg)
+		{
+		case WM_CLOSE:
+		{
+			// handles destroying window on close message
+			DestroyWindow(window_h);
+			return 0;
+		}
+		default:
+		{
+			// otherwise, get pointer to appropriate window container and pass processing to its window_proc message
+			const auto wc_p = reinterpret_cast<win32_window_container*>(GetWindowLongPtr(window_h, GWLP_USERDATA));
+			return wc_p->window_proc(window_h, msg, wparam, lparam);
+		}
+		}
+	}
+
+	LRESULT CALLBACK window_proc_setup(HWND window_h, UINT msg, WPARAM wparam, LPARAM lparam)
+	{
+		switch (msg)
+		{
+		case WM_NCCREATE:
+		{
+			// obtain and cast passed pointer to window container object
+			const auto create_struct_p = reinterpret_cast<CREATESTRUCTW*>(lparam);
+			const auto wc_p = reinterpret_cast<win32_window_container*>(create_struct_p->lpCreateParams);
+
+			// sanity check
+			if (wc_p == nullptr)
+			{
+				error_logger::log("CRITICAL ERROR: WM_NCCREATE received null pointer to window container object.");
+				exit(-1);
+			}
+
+			// resetting window processing function to the one provided by window container
+			SetWindowLongPtr(window_h, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wc_p));
+			SetWindowLongPtr(window_h, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(window_proc_redirect));
+
+			// redirect further processing to newly set processing function
+			return wc_p->window_proc(window_h, msg, wparam, lparam);
+		}
+		default:
+		{
+			return DefWindowProc(window_h, msg, wparam, lparam);
+		}
+		}
+	}
+
 	void win32_window::register_window_class() noexcept
 	{
 		auto wc = WNDCLASSEX{};
 		
 		wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC; // style flags - make window redraw on width/length changes due to move or resize; also it owns its own gfx context
-		wc.lpfnWndProc = DefWindowProc;                // pointer to function processing window's messages (currently default one)
+		wc.lpfnWndProc = window_proc_setup;            // pointer to function processing window's messages (setup version)
 		wc.cbClsExtra = 0;                             // bytes reserved after window class object, unused
 		wc.cbWndExtra = 0;                             // bytes reserved after window instance object, unused
 		wc.hInstance = m_instance_h;                   // handle to current instance of running application

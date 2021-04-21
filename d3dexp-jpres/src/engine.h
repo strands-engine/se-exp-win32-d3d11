@@ -19,6 +19,8 @@ namespace d3dexp
 
 	public:
 		bool initialize(HINSTANCE instance_h, std::string title, std::string class_name, int width, int height) noexcept;
+		
+		void frame();
 		bool process_messages() noexcept;
 	};
 }

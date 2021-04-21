@@ -1,6 +1,7 @@
 #pragma once
 
 #include "win32_window.h"
+#include "win32_keyboard.h"
 
 namespace d3dexp
 {
@@ -22,5 +23,6 @@ namespace d3dexp
 
 	protected:
 		win32_window m_window;
+		win32_keyboard m_keyboard;
 	};
 }

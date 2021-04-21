@@ -9,12 +9,25 @@ namespace d3dexp
 		{
 		case WM_CHAR:
 		{
-			auto letter = static_cast<unsigned char>(wparam);
+			const auto was_pressed = lparam & 0x40000000u;
+			if (!was_pressed || m_keyboard.is_char_autorepeat_enabled())
+			{
+				m_keyboard.on_char(static_cast<unsigned char>(wparam));
+			}
 			return 0;
 		}
 		case WM_KEYDOWN:
 		{
-			auto keycode = static_cast<unsigned char>(wparam);
+			const auto was_pressed = lparam & 0x40000000u;
+			if (!was_pressed || m_keyboard.is_key_autorepeat_enabled())
+			{
+				m_keyboard.on_key_pressed(static_cast<unsigned char>(wparam));
+			}
+			return 0;
+		}
+		case WM_KEYUP:
+		{
+			m_keyboard.on_key_released(static_cast<unsigned char>(wparam));
 			return 0;
 		}
 		default:

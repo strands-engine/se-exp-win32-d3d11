@@ -9,7 +9,7 @@ namespace d3dexp
 			return win32_keyboard_event{};
 		}
 
-		auto evt = m_key_queue.front();
+		const auto evt = win32_keyboard_event{ m_key_queue.front() };
 		m_key_queue.pop();
 		return evt;
 	}

@@ -23,6 +23,8 @@ namespace d3dexp
 	public:
 		[[nodiscard]] bool is_initialized() const noexcept { return m_window_h != NULL; }
 
+		[[nodiscard]] HWND handle() const noexcept { return m_window_h; }
+
 		bool initialize(win32_window_container * wc_p, HINSTANCE instance_h, std::string title, std::string class_name, int width, int height) noexcept;
 
 		bool process_messages() noexcept;

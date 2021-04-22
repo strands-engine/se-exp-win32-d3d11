@@ -149,6 +149,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\d3d11_graphics.cpp" />
+    <ClCompile Include="src\dxgi_adapter_reader.cpp" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\error_logger.cpp" />
     <ClCompile Include="src\string_converter.cpp" />
@@ -161,6 +163,8 @@
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\d3d11_graphics.h" />
+    <ClInclude Include="src\dxgi_adapter_reader.h" />
     <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\error_logger.h" />
     <ClInclude Include="src\string_converter.h" />

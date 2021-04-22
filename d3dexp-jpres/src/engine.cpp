@@ -4,7 +4,17 @@ namespace d3dexp
 {
 	bool engine::initialize(HINSTANCE instance_h, std::string title, std::string class_name, int width, int height) noexcept
 	{
-		return m_window.initialize(this, instance_h, title, class_name, width, height);
+		if (!m_window.initialize(this, instance_h, title, class_name, width, height))
+		{
+			return false;
+		}
+
+		if (!m_graphics.initialize(m_window.handle(), width, height))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	void engine::frame()

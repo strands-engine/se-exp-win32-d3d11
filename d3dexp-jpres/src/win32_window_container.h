@@ -3,6 +3,7 @@
 #include "win32_window.h"
 #include "win32_keyboard.h"
 #include "win32_mouse.h"
+#include "d3d11_graphics.h"
 
 namespace d3dexp
 {
@@ -26,5 +27,6 @@ namespace d3dexp
 		win32_window m_window;
 		win32_keyboard m_keyboard;
 		win32_mouse m_mouse;
+		d3d11_graphics m_graphics;
 	};
 }

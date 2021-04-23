@@ -88,6 +88,10 @@ namespace d3dexp
 			msg += std::to_string(e.y_pos());
 			msg += ")\n";
 			OutputDebugStringA(msg.c_str());
+
+
+			// render graphics frame
+			m_graphics.frame();
 		}
 
 	}

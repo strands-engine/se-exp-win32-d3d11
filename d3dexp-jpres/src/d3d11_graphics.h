@@ -20,6 +20,8 @@ namespace d3dexp
 	public:
 		bool initialize(HWND window_h, int width, int height) noexcept;
 
+		void frame() noexcept;
+
 	private:
 		bool initialize_d3d11(HWND window_h, int width, int height) noexcept;
 

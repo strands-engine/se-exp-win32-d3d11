@@ -64,7 +64,7 @@ namespace d3dexp
 	bool win32_window::process_messages() noexcept
 	{
 		auto msg = MSG{};
-		if (PeekMessage(&msg, m_window_h, 0, 0, PM_REMOVE))
+		while (PeekMessage(&msg, m_window_h, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);

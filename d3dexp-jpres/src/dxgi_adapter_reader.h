@@ -26,6 +26,9 @@ namespace d3dexp
 	public:
 		explicit dxgi_adapter_data(IDXGIAdapter* adapter_p) noexcept;
 
+	public:
+		IDXGIAdapter* ptr() const noexcept { return m_adapter_p.Get(); }
+
 	private:
 		DXGI_ADAPTER_DESC m_description;
 		com_ptr<IDXGIAdapter> m_adapter_p;

@@ -1,6 +1,7 @@
 #include "d3d11_graphics.h"
 
 #include "error_logger.h"
+#include "d3d11_vertex.h"
 
 namespace d3dexp
 {
@@ -15,7 +16,12 @@ namespace d3dexp
 		{
 			return false;
 		}
-		
+
+		if (!initialize_scene())
+		{
+			return false;
+		}
+
 		return true;
 	}
 
@@ -25,9 +31,23 @@ namespace d3dexp
 		const float background_colour[] = { 0.0f, 1.0f, 1.0f, 1.0f };
 		m_context_p->ClearRenderTargetView(m_rtv_p.Get(), background_colour);
 
+		// set input assembler settings
+		auto stride = UINT{ sizeof(d3d11_vertex_t) };
+		auto offset = UINT{};
+		m_context_p->IASetVertexBuffers(0, 1, m_vertex_buffer_p.GetAddressOf(), &stride, &offset);
+		m_context_p->IASetInputLayout(m_vs.layout());
+		m_context_p->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		// set shaders
+		m_context_p->VSSetShader(m_vs.ptr(), NULL, 0);
+		m_context_p->PSSetShader(m_ps.ptr(), NULL, 0);
+
+		// draw geometry
+		m_context_p->Draw(3, 0);
+
 		// present back buffer to front
 		// NOTE: first argument: 0 - no vsync, 1 - enables vsync
-		m_swap_chain_p->Present(0, NULL);
+		m_swap_chain_p->Present(1, NULL);
 	}
 
 	bool d3d11_graphics::initialize_d3d11(HWND window_h, int width, int height) noexcept
@@ -139,15 +159,18 @@ namespace d3dexp
 		// VS - VERTEX SHADER
 
 		// create input layout descriptions array
+		//{ "POSITION",					// semantic name
+		//	0,							// semantic index
+		//	DXGI_FORMAT_R32G32_FLOAT,		// data format
+		//	0,							// input slot index
+		//	0,							// byte offset - use D3D11_APPEND_ALIGNED_ELEMENT macro
+		//	D3D11_INPUT_PER_VERTEX_DATA,  // change for instancing
+		//	0 }                           // change for instancing
+
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
-			{ "POSITION",					// semantic name
-			  0,							// semantic index
-			  DXGI_FORMAT_R32G32_FLOAT,		// data format
-			  0,							// input slot index
-			  0,							// byte offset - use D3D11_APPEND_ALIGNED_ELEMRNT macro
-			  D3D11_INPUT_PER_VERTEX_DATA,  // change for instancing
-			  0 }                           // change for instancing
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,                            D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOUR",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
 		// initialize vertex shader loaded from given path with created input layout
@@ -159,6 +182,41 @@ namespace d3dexp
 		// initialize pixel shader loaded from given path with created input layout
 		if (!m_ps.initialize(m_device_p, L"..\\x64\\Debug\\ps_hello_triangle.cso"))
 		{
+			return false;
+		}
+
+		return true;
+	}
+
+	bool d3d11_graphics::initialize_scene() noexcept
+	{
+		// create vertex buffer data
+		d3d11_vertex_t verts[] = 
+		{ 
+			//    x      y     z        r     g     b
+			{  0.0f,  0.5f, 0.0f,    0.5f, 1.0f, 0.5f },
+			{  0.5f, -0.5f, 0.0f,    1.0f, 1.0f, 0.0f },
+			{ -0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 1.0f },
+		};
+
+		// create vertex buffer description
+		auto vb_desc = D3D11_BUFFER_DESC{};
+
+		vb_desc.Usage = D3D11_USAGE_DEFAULT;
+		vb_desc.ByteWidth = sizeof(d3d11_vertex_t) * ARRAYSIZE(verts);
+		vb_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vb_desc.CPUAccessFlags = 0;
+		vb_desc.MiscFlags = 0;
+
+		// setup subresource data struct
+		auto vb_data = D3D11_SUBRESOURCE_DATA{};
+		vb_data.pSysMem = verts;
+
+		// creating vertex buffer
+		auto hr = m_device_p->CreateBuffer(&vb_desc, &vb_data, &m_vertex_buffer_p);
+		if (FAILED(hr))
+		{
+			error_logger::log(hr, "Failed to create vertex buffer.");
 			return false;
 		}
 

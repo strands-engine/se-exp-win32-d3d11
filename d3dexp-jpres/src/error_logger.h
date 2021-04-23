@@ -13,5 +13,6 @@ namespace d3dexp
 	public:
 		static void log(std::string const& message);
 		static void log(HRESULT hr, std::string const& message);
+		static void log(HRESULT hr, std::wstring const& message);
 	};
 }

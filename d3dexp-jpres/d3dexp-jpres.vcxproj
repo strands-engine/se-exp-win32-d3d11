@@ -154,6 +154,7 @@
     <ClCompile Include="src\dxgi_adapter_reader.cpp" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\error_logger.cpp" />
+    <ClCompile Include="src\d3d11_shaders.cpp" />
     <ClCompile Include="src\string_converter.cpp" />
     <ClCompile Include="src\win32_keyboard.cpp" />
     <ClCompile Include="src\win32_keyboard_event.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="src\dxgi_adapter_reader.h" />
     <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\error_logger.h" />
+    <ClInclude Include="src\d3d11_shaders.h" />
     <ClInclude Include="src\string_converter.h" />
     <ClInclude Include="src\win32_keyboard.h" />
     <ClInclude Include="src\win32_keyboard_event.h" />
@@ -176,6 +178,15 @@
     <ClInclude Include="src\win32_mouse_event.h" />
     <ClInclude Include="src\win32_window.h" />
     <ClInclude Include="src\win32_window_container.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\vs_hello_triangle.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

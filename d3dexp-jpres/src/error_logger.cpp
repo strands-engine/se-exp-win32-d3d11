@@ -18,4 +18,11 @@ namespace d3dexp
 		auto errmsg = std::wstring(L"Error: ") + string_converter::to_wide(message) + L"\n" + err.ErrorMessage();
 		MessageBoxW(NULL, errmsg.c_str(), L"Error", MB_ICONERROR);
 	}
+
+	void error_logger::log(HRESULT hr, std::wstring const& message)
+	{
+		auto err = _com_error{ hr };
+		auto errmsg = std::wstring(L"Error: ") + message + L"\n" + err.ErrorMessage();
+		MessageBoxW(NULL, errmsg.c_str(), L"Error", MB_ICONERROR);
+	}
 }

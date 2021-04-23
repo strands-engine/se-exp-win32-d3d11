@@ -11,6 +11,11 @@ namespace d3dexp
 			return false;
 		}
 
+		if (!initialize_shaders())
+		{
+			return false;
+		}
+		
 		return true;
 	}
 
@@ -112,6 +117,44 @@ namespace d3dexp
 		// set created render target view as redner target in pipeline's output merger
 		m_context_p->OMSetRenderTargets(1, m_rtv_p.GetAddressOf(), nullptr);
 
+
+		// RS - VIEWPORT
+
+		// create viewport setup struct
+		auto viewport = D3D11_VIEWPORT{};
+
+		viewport.TopLeftX = 0.0f;
+		viewport.TopLeftY = 0.0f;
+		viewport.Width = static_cast<float>(width);
+		viewport.Height = static_cast<float>(height);
+
+		// set vievport in rasterizer
+		m_context_p->RSSetViewports(1, &viewport);
+
+		return true;
+	}
+
+	bool d3d11_graphics::initialize_shaders() noexcept
+	{
+		// VS - VERTEX SHADER
+
+		// create input layout descriptions array
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+		{
+			{ "POSITION",					// semantic name
+			  0,							// semantic index
+			  DXGI_FORMAT_R32G32_FLOAT,		// data format
+			  0,							// input slot index
+			  0,							// byte offset - use D3D11_APPEND_ALIGNED_ELEMRNT macro
+			  D3D11_INPUT_PER_VERTEX_DATA,  // change for instancing
+			  0 }                           // change for instancing
+		};
+
+		// initialize vertex shader loaded from given path with created input layout
+		if (!m_vs.initialize(m_device_p, L"..\\x64\\Debug\\vs_hello_triangle.cso", layout, ARRAYSIZE(layout)))
+		{
+			return false;
+		}
 
 		return true;
 	}

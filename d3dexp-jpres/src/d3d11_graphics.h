@@ -1,6 +1,8 @@
 #pragma once
 
 #include "dxgi_adapter_reader.h"
+#include "d3d11_shaders.h"
+
 
 namespace d3dexp
 {
@@ -32,7 +34,6 @@ namespace d3dexp
 		com_ptr<IDXGISwapChain> m_swap_chain_p;
 		com_ptr<ID3D11RenderTargetView> m_rtv_p;
 
-		com_ptr<ID3D11InputLayout> m_input_layout_p;
-		com_ptr<ID3D10Blob> m_vx_shader_data_p;
+		d3d11_vertex_shader m_vs;
 	};
 }

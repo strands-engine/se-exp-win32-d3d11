@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "d3dexp-chili", "d3dexp\d3de
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "d3dexp-jpres", "d3dexp-jpres\d3dexp-jpres.vcxproj", "{7144AA2D-8598-4544-8D4D-BDDE8F928B64}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "d3dexp-rastertek", "d3dexp-rastertek\d3dexp-rastertek.vcxproj", "{108EA2B5-FE67-45AA-904D-785BDCB48BC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -29,6 +31,14 @@ Global
 		{7144AA2D-8598-4544-8D4D-BDDE8F928B64}.Release|x64.Build.0 = Release|x64
 		{7144AA2D-8598-4544-8D4D-BDDE8F928B64}.Release|x86.ActiveCfg = Release|Win32
 		{7144AA2D-8598-4544-8D4D-BDDE8F928B64}.Release|x86.Build.0 = Release|Win32
+		{108EA2B5-FE67-45AA-904D-785BDCB48BC9}.Debug|x64.ActiveCfg = Debug|x64
+		{108EA2B5-FE67-45AA-904D-785BDCB48BC9}.Debug|x64.Build.0 = Debug|x64
+		{108EA2B5-FE67-45AA-904D-785BDCB48BC9}.Debug|x86.ActiveCfg = Debug|Win32
+		{108EA2B5-FE67-45AA-904D-785BDCB48BC9}.Debug|x86.Build.0 = Debug|Win32
+		{108EA2B5-FE67-45AA-904D-785BDCB48BC9}.Release|x64.ActiveCfg = Release|x64
+		{108EA2B5-FE67-45AA-904D-785BDCB48BC9}.Release|x64.Build.0 = Release|x64
+		{108EA2B5-FE67-45AA-904D-785BDCB48BC9}.Release|x86.ActiveCfg = Release|Win32
+		{108EA2B5-FE67-45AA-904D-785BDCB48BC9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -35,5 +35,6 @@ namespace d3dexp
 		com_ptr<ID3D11RenderTargetView> m_rtv_p;
 
 		d3d11_vertex_shader m_vs;
+		d3d11_pixel_shader m_ps;
 	};
 }

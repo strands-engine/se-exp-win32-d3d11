@@ -156,6 +156,12 @@ namespace d3dexp
 			return false;
 		}
 
+		// initialize pixel shader loaded from given path with created input layout
+		if (!m_ps.initialize(m_device_p, L"..\\x64\\Debug\\ps_hello_triangle.cso"))
+		{
+			return false;
+		}
+
 		return true;
 	}
 }

@@ -37,4 +37,25 @@ namespace d3dexp
 
 		return true;
 	}
+
+	bool d3d11_pixel_shader::initialize(com_ptr<ID3D11Device> const& device_p, std::wstring const& path) noexcept
+	{
+		// loading compiled shader bytecode
+		auto hr = D3DReadFileToBlob(path.c_str(), &m_data_p);
+		if (FAILED(hr))
+		{
+			error_logger::log(hr, std::wstring{ L"Failed to load pixel shader from: " } + path);
+			return false;
+		}
+
+		// creating respective vertex shader object
+		hr = device_p->CreatePixelShader(bytecode(), bytecode_size(), nullptr, &m_shader_p);
+		if (FAILED(hr))
+		{
+			error_logger::log(hr, std::wstring{ L"Failed to create pixel shader from: " } + path);
+			return false;
+		}
+
+		return true;
+	}
 }

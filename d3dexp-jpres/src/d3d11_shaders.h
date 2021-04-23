@@ -35,8 +35,31 @@ namespace d3dexp
 		com_ptr<ID3D11VertexShader> m_shader_p = nullptr;
 		com_ptr<ID3D11InputLayout> m_layout_p = nullptr;
 		com_ptr<ID3D10Blob> m_data_p = nullptr;
+	};
 
+	class d3d11_pixel_shader
+	{
+	public:
+		d3d11_pixel_shader() noexcept = default;
 
+		d3d11_pixel_shader(d3d11_pixel_shader const&) = delete;
+		d3d11_pixel_shader(d3d11_pixel_shader&&) = delete;
 
+		d3d11_pixel_shader& operator=(d3d11_pixel_shader const&) = delete;
+		d3d11_pixel_shader& operator=(d3d11_pixel_shader&&) = delete;
+
+		~d3d11_pixel_shader() noexcept = default;
+
+	public:
+		bool initialize(com_ptr<ID3D11Device> const& device_p, std::wstring const& path) noexcept;
+
+		[[nodiscard]] ID3D11PixelShader* ptr() const noexcept { return m_shader_p.Get(); }
+
+		[[nodiscard]] void* bytecode() const noexcept { return m_data_p->GetBufferPointer(); }
+		[[nodiscard]] SIZE_T bytecode_size() const noexcept { return m_data_p->GetBufferSize(); }
+
+	private:
+		com_ptr<ID3D11PixelShader> m_shader_p = nullptr;
+		com_ptr<ID3D10Blob> m_data_p = nullptr;
 	};
 }

@@ -107,14 +107,17 @@ namespace d3dexp
 			OutputDebugString(msg.c_str());
 		}
 
-		// for fullscreen - look through all available display modes to find one matching screen dimensions and get its refresh rate
+		// if vsync is enabled - look through all available display modes to find one matching screen dimensions and get its refresh rate
 		// NOTE: todo enumerate all available refresh rates to choose
-		for (auto i = std::size_t{ 0u }; i < modes_count; i++)
+		if (m_is_vsync_enabled)
 		{
-			if (display_modes[i].Width == static_cast<UINT>(m_width) && display_modes[i].Height == static_cast<UINT>(m_height))
+			for (auto i = std::size_t{ 0u }; i < modes_count; i++)
 			{
-				m_refresh_rate = display_modes[i].RefreshRate;
-				break;
+				if (display_modes[i].Width == static_cast<UINT>(m_width) && display_modes[i].Height == static_cast<UINT>(m_height))
+				{
+					m_refresh_rate = display_modes[i].RefreshRate;
+					break;
+				}
 			}
 		}
 
@@ -124,11 +127,68 @@ namespace d3dexp
 
 		// CREATION OF D3D11 DEVICE, IMMEDIATE CONTEXT AND SWAP CHAIN
 
+		// setting up the swap chain options
+		auto sc_desc = DXGI_SWAP_CHAIN_DESC{};
+
+		sc_desc.BufferCount = 1;													// double buffering setup
+		sc_desc.BufferDesc.Width = m_width;											// output buffer width
+		sc_desc.BufferDesc.Height = m_height;										// output buffer height
+		sc_desc.BufferDesc.Format = desired_format;									// output buffer pixel format - prefer BGRA [chili + other comments]
+		sc_desc.BufferDesc.RefreshRate = m_refresh_rate;							// if vsync is enabled set to output RR, oterwise default 0=0/1
+		sc_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;						// set buffer usage to back buffer
+		sc_desc.OutputWindow = window_h;											// handle to output window
+		sc_desc.SampleDesc.Count = 1;												// disable multisampling
+		sc_desc.SampleDesc.Quality = 0;												// disable multisampling
+		sc_desc.Windowed = BOOL{ !m_is_fullscreen };								// set mode to windowed or fullscreen
+		sc_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;	// scanline ordering - unspecified
+		sc_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;					// scaling mode - unspecified
+		sc_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;                              // discard back buffer on swap
+		sc_desc.Flags = 0;															// no extra option flags
+
+		// choose desired feature level
+		D3D_FEATURE_LEVEL desired_feature_levels[] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_11_1 };
+		auto used_feature_level = D3D_FEATURE_LEVEL{};
+
+		// create device, device context and swap chain
+		hr = D3D11CreateDeviceAndSwapChain(
+			nullptr,							// use default adapter (optionally pass previously chosed adapter)
+			D3D_DRIVER_TYPE_HARDWARE,           // specified to chose default hardware adapter (if precisely given - change to UNKNOWN)
+			nullptr,							// no handle to lib for software backend
+			0,									// no extra runtime flags
+			desired_feature_levels,				// desired feature level
+			ARRAYSIZE(desired_feature_levels),	// number of desired feature levels
+			D3D11_SDK_VERSION,					// sdk version macro
+			&sc_desc,							// options for swap chain setup
+			&m_swap_chain_p,					// pointer to created swap chain
+			&m_device_p,						// pointer to created device
+			&used_feature_level,				// pointer to actually used feature level
+			&m_context_p);						// pointer to created immediate device context
+		if (FAILED(hr))
+		{
+			OutputDebugString(L"Failed to initialize D3D11 device, context, and swap chain.");
+			exit(-1);
+		}
+
+		// debug output of used feature level
+		switch (used_feature_level)
+		{
+		case D3D_FEATURE_LEVEL_11_0:
+		{
+			OutputDebugString(L"D3D FEATURE LEVEL - 11.0\n");
+			break;
+		}
+		case D3D_FEATURE_LEVEL_11_1:
+		{
+			OutputDebugString(L"D3D FEATURE LEVEL - 11.1\n");
+			break;
+		}
+		default:
+			break;
+		}
+
 
 		/*
 
-		DXGI_SWAP_CHAIN_DESC swapChainDesc;
-		D3D_FEATURE_LEVEL featureLevel;
 		ID3D11Texture2D* backBufferPtr;
 		D3D11_TEXTURE2D_DESC depthBufferDesc;
 		D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
@@ -138,78 +198,6 @@ namespace d3dexp
 		float fieldOfView, screenAspect;
 
 
-			// Initialize the swap chain description.
-			ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
-
-		// Set to a single back buffer.
-		swapChainDesc.BufferCount = 1;
-
-		// Set the width and height of the back buffer.
-		swapChainDesc.BufferDesc.Width = screenWidth;
-		swapChainDesc.BufferDesc.Height = screenHeight;
-
-		// Set regular 32-bit surface for the back buffer.
-		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		The next part of the description of the swap chain is the refresh rate.The refresh rate is how many times a second it draws the back buffer to the front buffer.If vsync is set to true in our graphicsclass.h header then this will lock the refresh rate to the system settings(for example 60hz).That means it will only draw the screen 60 times a second(or higher if the system refresh rate is more than 60).However if we set vsync to false then it will draw the screen as many times a second as it can, however this can cause some visual artifacts.
-
-			// Set the refresh rate of the back buffer.
-			if (m_vsync_enabled)
-			{
-				swapChainDesc.BufferDesc.RefreshRate.Numerator = numerator;
-				swapChainDesc.BufferDesc.RefreshRate.Denominator = denominator;
-			}
-			else
-			{
-				swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
-				swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
-			}
-
-		// Set the usage of the back buffer.
-		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-
-		// Set the handle for the window to render to.
-		swapChainDesc.OutputWindow = hwnd;
-
-		// Turn multisampling off.
-		swapChainDesc.SampleDesc.Count = 1;
-		swapChainDesc.SampleDesc.Quality = 0;
-
-		// Set to full screen or windowed mode.
-		if (fullscreen)
-		{
-			swapChainDesc.Windowed = false;
-		}
-		else
-		{
-			swapChainDesc.Windowed = true;
-		}
-
-		// Set the scan line ordering and scaling to unspecified.
-		swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-		// Discard the back buffer contents after presenting.
-		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-
-		// Don't set the advanced flags.
-		swapChainDesc.Flags = 0;
-		After setting up the swap chain description we also need to setup one more variable called the feature level.This variable tells DirectX what version we plan to use.Here we set the feature level to 11.0 which is DirectX 11. You can set this to 10 or 9 to use a lower level version of DirectX if you plan on supporting multiple versions or running on lower end hardware.
-
-			// Set the feature level to DirectX 11.
-			featureLevel = D3D_FEATURE_LEVEL_11_0;
-		Now that the swap chain descriptionand feature level have been filled out we can create the swap chain, the Direct3D device, and the Direct3D device context.The Direct3D deviceand Direct3D device context are very important, they are the interface to all of the Direct3D functions.We will use the deviceand device context for almost everything from this point forward.
-
-			Those of you reading this who are familiar with the previous versions of DirectX will recognize the Direct3D device but will be unfamiliar with the new Direct3D device context.Basically they took the functionality of the Direct3D deviceand split it up into two different devices so you need to use both now.
-
-			Note that if the user does not have a DirectX 11 video card this function call will fail to create the device and device context.Also if you are testing DirectX 11 functionality yourself and don't have a DirectX 11 video card then you can replace D3D_DRIVER_TYPE_HARDWARE with D3D_DRIVER_TYPE_REFERENCE and DirectX will use your CPU to draw instead of the video card hardware. Note that this runs 1/1000 the speed but it is good for people who don't have DirectX 11 video cards yet on all their machines.
-
-			// Create the swap chain, Direct3D device, and Direct3D device context.
-			result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &featureLevel, 1,
-				D3D11_SDK_VERSION, &swapChainDesc, &m_swapChain, &m_device, NULL, &m_deviceContext);
-		if (FAILED(result))
-		{
-			return false;
-		}
 		Sometimes this call to create the device will fail if the primary video card is not compatible with DirectX 11. Some machines may have the primary card as a DirectX 10 video card and the secondary card as a DirectX 11 video card.Also some hybrid graphics cards work that way with the primary being the low power Intel card and the secondary being the high power Nvidia card.To get around this you will need to not use the default deviceand instead enumerate all the video cards in the machineand have the user choose which one to useand then specify that card when creating the device.
 
 			Now that we have a swap chain we need to get a pointer to the back bufferand then attach it to the swap chain.We'll use the CreateRenderTargetView function to attach the back buffer to our swap chain.

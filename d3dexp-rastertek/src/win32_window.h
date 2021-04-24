@@ -40,9 +40,9 @@ namespace d3dexp
 		HWND m_window_h = nullptr;
 		HINSTANCE m_instance_h = nullptr;
 
-		int m_width = 0;
+		int m_width = 0;        // do not update on window resizing
 		int m_height = 0;
-		int m_pos_x = 0;
+		int m_pos_x = 0;        // do not update on window moving
 		int m_pos_y = 0;
 
 		bool m_is_fullscreen = false;

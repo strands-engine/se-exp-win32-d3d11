@@ -3,5 +3,7 @@
 
 int APIENTRY wWinMain(_In_ HINSTANCE instance_h, _In_opt_ HINSTANCE prev_instance_h, _In_ LPWSTR argv, _In_ int cmd_show)
 {
-	return d3dexp::engine{}.run();
+	auto settings = d3dexp::win32_graphics_settings_t{};
+	settings.is_fullscreen = false;
+	return d3dexp::engine{L"Rastertek D3DEXP", settings}.run();
 }

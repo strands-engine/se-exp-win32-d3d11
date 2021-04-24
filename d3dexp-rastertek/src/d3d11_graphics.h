@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <Windows.h>
+
 #include "d3d11_camera.h"
 #include "d3d11_color_shader.h"
 #include "d3d11_model.h"

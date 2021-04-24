@@ -24,7 +24,7 @@ namespace d3dexp
 		[[nodiscard]] bool is_key_pressed(unsigned char keycode) const noexcept { return m_key_states[keycode]; }
 
 		void on_key_pressed(unsigned char keycode) noexcept { m_key_states[keycode] = true; }
-		void on_key_releassed(unsigned char keycode) noexcept { m_key_states[keycode] = false; }
+		void on_key_released(unsigned char keycode) noexcept { m_key_states[keycode] = false; }
 
 	private:
 		std::array<bool, 256> m_key_states = std::array<bool, 256>{};

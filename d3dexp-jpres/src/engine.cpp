@@ -1,3 +1,4 @@
+#include "..\..\d3dexp-rastertek\src\engine.h"
 #include "engine.h"
 
 namespace d3dexp
@@ -94,6 +95,11 @@ namespace d3dexp
 			m_graphics.frame();
 		}
 
+	}
+
+	LRESULT engine::message_handler(HWND window_h, UINT msg, WPARAM wparam, LPARAM lparam)
+	{
+		return LRESULT();
 	}
 
 	bool engine::process_messages() noexcept

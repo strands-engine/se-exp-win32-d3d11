@@ -11,7 +11,7 @@ namespace d3dexp
 	class win32_window
 	{
 	public:
-		win32_window(std::wstring const& title, win32_graphics_settings_t& settings) noexcept;
+		win32_window(std::wstring const& title, d3d11_graphics_settings_t& settings) noexcept;
 
 		win32_window(win32_window const&) = delete;
 		win32_window(win32_window &&) = delete;

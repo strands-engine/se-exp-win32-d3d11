@@ -9,7 +9,7 @@ namespace d3dexp
 	class engine
 	{
 	public:
-		engine(std::wstring const& app_name, win32_graphics_settings_t& settings) noexcept;
+		engine(std::wstring const& app_name, d3d11_graphics_settings_t& settings) noexcept;
 
 		engine(engine const&) = delete;
 		engine(engine &&) = delete;

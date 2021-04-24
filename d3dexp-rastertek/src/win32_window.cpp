@@ -2,7 +2,7 @@
 
 namespace d3dexp
 {
-    win32_window::win32_window(std::wstring const& title, win32_graphics_settings_t& settings) noexcept
+    win32_window::win32_window(std::wstring const& title, d3d11_graphics_settings_t& settings) noexcept
         : m_title(title), m_width(settings.width), m_height(settings.height), m_is_fullscreen(settings.is_fullscreen)
     {
 		// set global pointer to window class

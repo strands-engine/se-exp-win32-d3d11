@@ -2,7 +2,7 @@
 
 namespace d3dexp
 {
-	engine::engine(std::wstring const& app_name, win32_graphics_settings_t& settings) noexcept
+	engine::engine(std::wstring const& app_name, d3d11_graphics_settings_t& settings) noexcept
 		: m_window(app_name, settings)
 	{}
 

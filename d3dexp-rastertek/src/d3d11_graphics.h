@@ -9,10 +9,6 @@
 #include <DirectXMath.h>
 #include <wrl/client.h>
 
-#include "d3d11_camera.h"
-#include "d3d11_color_shader.h"
-#include "d3d11_model.h"
-
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
@@ -69,11 +65,6 @@ namespace d3dexp
 		void end_scene() noexcept;
 
 	private:
-		d3d11_camera m_camera;
-
-		std::unique_ptr<d3d11_color_shader> m_shader_p = nullptr;
-		std::unique_ptr<d3d11_model> m_model_p = nullptr;
-
 		com_ptr<IDXGISwapChain> m_swap_chain_p = nullptr;
 		com_ptr<ID3D11Device> m_device_p = nullptr;
 		com_ptr<ID3D11DeviceContext> m_context_p = nullptr;

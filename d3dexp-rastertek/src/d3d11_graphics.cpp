@@ -288,8 +288,8 @@ namespace d3dexp
 
 		vp.Width = static_cast<float>(m_width);
 		vp.Height = static_cast<float>(m_height);
-		vp.MaxDepth = 1.0f;
 		vp.MinDepth = 0.0f;
+		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0.0f;
 		vp.TopLeftY = 0.0f;
 

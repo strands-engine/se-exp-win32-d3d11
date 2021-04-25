@@ -17,11 +17,12 @@ namespace d3dexp
 		// setup vertex and index data and counts
 		const vertex_t vertices[] =
 		{
-			{-1.0f, -1.0f, 0.0f,    0.5f, 1.0f, 0.5f, 1.0f},
-			{ 0.0f,  1.0f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f},
-			{ 1.0f, -1.0f, 0.0f,    0.0f, 1.0f, 1.0f, 1.0f},
+			{ 0.0f,  0.5f, 0.0f,    0.5f, 1.0f, 0.5f, 1.0f},
+			{ 0.5f, -0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f},
+			{-0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 1.0f, 1.0f},
 		};
-		const unsigned long indices[] = { 0,1,2 };
+
+		const unsigned long indices[] = { 0, 1 ,2 };
 		m_vertex_count = ARRAYSIZE(vertices);
 		m_index_count = ARRAYSIZE(indices);
 
@@ -32,11 +33,11 @@ namespace d3dexp
 		auto vb_desc = D3D11_BUFFER_DESC{};
 
 		vb_desc.Usage = D3D11_USAGE_DEFAULT;								// default usage type
-		vb_desc.ByteWidth = sizeof(vertex_t) * m_vertex_count;              // total byte size (element sise * element count)
+		vb_desc.ByteWidth = sizeof(vertices);                               // total byte size
 		vb_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;						// usage as vertex buffer
 		vb_desc.CPUAccessFlags = 0;											// no extra cpu access flags
 		vb_desc.MiscFlags = 0;												// no extra flags
-		vb_desc.StructureByteStride = 0;									// no stride
+		vb_desc.StructureByteStride = sizeof(vertex_t);						// stride (vs 0 ???)
 
 		// setup subresource data with crated vertex data
 		auto vb_data = D3D11_SUBRESOURCE_DATA{};
@@ -56,11 +57,11 @@ namespace d3dexp
 		auto ib_desc = D3D11_BUFFER_DESC{};
 
 		ib_desc.Usage = D3D11_USAGE_DEFAULT;								// default usage type
-		ib_desc.ByteWidth = sizeof(unsigned long) * m_index_count;          // total byte size (element sise * element count)
+		ib_desc.ByteWidth = sizeof(indices);						        // total byte size (element sise * element count)
 		ib_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;						// usage as index buffer
 		ib_desc.CPUAccessFlags = 0;											// no extra cpu access flags
 		ib_desc.MiscFlags = 0;												// no extra flags
-		ib_desc.StructureByteStride = 0;									// no stride
+		ib_desc.StructureByteStride = sizeof(unsigned long);					// stride (vs 0 ???)
 
 		// setup subresource data with crated index data
 		auto ib_data = D3D11_SUBRESOURCE_DATA{};
@@ -82,7 +83,7 @@ namespace d3dexp
 		// bind vertex buffer to pipeline
 		auto stride = UINT{ sizeof(vertex_t) };
 		auto offset = UINT{ 0u };
-		context_p->IAGetVertexBuffers(0u, 1u, m_vertex_buffer_p.GetAddressOf(), &stride, &offset);
+		context_p->IASetVertexBuffers(0u, 1u, m_vertex_buffer_p.GetAddressOf(), &stride, &offset);
 
 		// bind index buffer to pieline
 		context_p->IASetIndexBuffer(m_index_buffer_p.Get(), DXGI_FORMAT_R32_UINT, 0u);

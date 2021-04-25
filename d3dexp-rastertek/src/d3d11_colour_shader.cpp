@@ -174,5 +174,6 @@ namespace d3dexp
 
 		// draw
 		context_p->DrawIndexed(index_count, 0u, 0);
+		//context_p->Draw(3, 0);
     }
 }

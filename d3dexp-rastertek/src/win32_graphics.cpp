@@ -4,7 +4,7 @@ namespace d3dexp
 {
     win32_graphics::win32_graphics(HWND window_h, d3d11_graphics_settings_t& settings) noexcept
         : m_d3dgfx(window_h, settings),
-        m_camera({ 0.0f, 0.0f, -0.5f }, {})
+        m_camera({ 0.0f, 0.0f, -2.5f }, {})
     {
         m_model_p = std::make_unique<d3d11_model>(m_d3dgfx.device());
         m_shader_p = std::make_unique<d3d11_colour_shader>(m_d3dgfx.device(), window_h);

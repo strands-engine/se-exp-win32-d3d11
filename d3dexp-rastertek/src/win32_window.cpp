@@ -22,7 +22,7 @@ namespace d3dexp
 		wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
 		wc.hIconSm = wc.hIcon;
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);        // w/o d3d necessary to see borderless window (with WS_POPUP style)
+		wc.hbrBackground = NULL;						// (HBRUSH)GetStockObject(BLACK_BRUSH) - would be necessary to see borderless window (with WS_POPUP style) w/o D3D swapchain established
 		wc.lpszMenuName = NULL;
 		wc.lpszClassName = m_title.c_str();
 		wc.cbSize = sizeof(WNDCLASSEX);

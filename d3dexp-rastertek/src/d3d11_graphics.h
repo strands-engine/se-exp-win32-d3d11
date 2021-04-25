@@ -34,6 +34,7 @@ namespace d3dexp
 	{
 		float screen_near_plane = 1000.0f;
 		float screen_far_plane = 0.1f;
+		float field_of_view = 3.141592654f / 4.0f;
 		int width = 800;
 		int height = 600;
 		bool is_vsync_enabled = true;
@@ -51,7 +52,7 @@ namespace d3dexp
 		d3d11_graphics& operator=(d3d11_graphics const&) = delete;
 		d3d11_graphics& operator=(d3d11_graphics &&) = delete;
 
-		~d3d11_graphics() noexcept = default;
+		~d3d11_graphics() noexcept;
 
 	public:
 		[[nodiscard]] ID3D11Device* device() const noexcept { return m_device_p.Get(); }
@@ -96,6 +97,7 @@ namespace d3dexp
 		int m_height = 0;
 		float m_near_plane = 0.0f;
 		float m_far_plane = 0.0f;
+		float m_field_of_view = 3.141592654f / 4.0f;
 		bool m_is_fullscreen = false;
 		bool m_is_vsync_enabled = true;
 	};

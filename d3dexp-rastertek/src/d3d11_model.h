@@ -19,7 +19,7 @@ namespace d3dexp
 		};
 
 	public:
-		d3d11_model() noexcept = default;
+		d3d11_model(ID3D11Device * device_p) noexcept;
 
 		d3d11_model(d3d11_model const&) = delete;
 		d3d11_model(d3d11_model &&) = delete;
@@ -30,9 +30,21 @@ namespace d3dexp
 		~d3d11_model() noexcept = default;
 
 	public:
-	private:
-	private:
+		[[nodiscard]] int vertex_count() const noexcept { return m_vertex_count; }
+		[[nodiscard]] int index_count() const noexcept { return m_index_count; }
 
+		void render(ID3D11DeviceContext* context_p) noexcept;
 
+	private:
+		bool initialize_buffers(ID3D11Device* device_p) noexcept;
+
+		void render_buffers(ID3D11DeviceContext* context_p) noexcept;
+
+	private:
+		com_ptr<ID3D11Buffer> m_vertex_buffer_p = nullptr;
+		com_ptr<ID3D11Buffer> m_index_buffer_p = nullptr;
+
+		int m_vertex_count = 0;			// unsigned int preferred
+		int m_index_count = 0;
 	};
 }

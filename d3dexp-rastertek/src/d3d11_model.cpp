@@ -17,9 +17,9 @@ namespace d3dexp
 		// setup vertex and index data and counts
 		const vertex_t vertices[] =
 		{
-			{ 0.0f,  0.5f, 0.0f,    0.5f, 1.0f, 0.5f, 1.0f},
-			{ 0.5f, -0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f},
-			{-0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 1.0f, 1.0f},
+			{-1.0f, -1.0f, 0.0f,    0.5f, 1.0f, 0.5f, 1.0f},
+			{ 0.0f,  1.0f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f},
+			{ 1.0f, -1.0f, 0.0f,    0.0f, 1.0f, 1.0f, 1.0f},
 		};
 		const unsigned long indices[] = { 0,1,2 };
 		m_vertex_count = ARRAYSIZE(vertices);
@@ -70,7 +70,7 @@ namespace d3dexp
 		ib_data.SysMemSlicePitch = 0;
 
 		// create index buffer with given index data
-		auto hr = device_p->CreateBuffer(&ib_desc, &ib_data, &m_index_buffer_p);
+		hr = device_p->CreateBuffer(&ib_desc, &ib_data, &m_index_buffer_p);
 		if (FAILED(hr)) return false;
 
 

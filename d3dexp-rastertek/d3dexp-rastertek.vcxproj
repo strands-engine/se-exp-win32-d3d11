@@ -144,7 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\d3d11_camera.cpp" />
-    <ClCompile Include="src\d3d11_color_shader.cpp" />
+    <ClCompile Include="src\d3d11_colour_shader.cpp" />
     <ClCompile Include="src\d3d11_graphics.cpp" />
     <ClCompile Include="src\d3d11_model.cpp" />
     <ClCompile Include="src\engine.cpp" />
@@ -155,13 +155,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\d3d11_camera.h" />
-    <ClInclude Include="src\d3d11_color_shader.h" />
+    <ClInclude Include="src\d3d11_colour_shader.h" />
     <ClInclude Include="src\d3d11_graphics.h" />
+    <ClInclude Include="src\d3d11_header_wrapper.h" />
     <ClInclude Include="src\d3d11_model.h" />
     <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\win32_graphics.h" />
     <ClInclude Include="src\win32_input.h" />
     <ClInclude Include="src\win32_window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\ps_colour.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="shaders\vs_colour.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -72,8 +72,8 @@ namespace d3dexp
 			m_title.c_str(),
 			m_title.c_str(),
 			WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,   // window styles used (??? - for parent window) - omitted WS_POPUP (makes window invisible (NOTE: WS_BORDER for borderless ?? + get rid of caption - WS_POPUP?)
-			m_pos_x,
-			m_pos_y,
+			m_pos_x,                                        // [braynzar]: CW_USEDEFAULT - leave system to decide initial location
+			m_pos_y,										// [braynzar]: CW_USEDEFAULT - leave system to decide initial location
 			m_width,
 			m_height,
 			NULL,
@@ -82,7 +82,8 @@ namespace d3dexp
 			NULL);
 
 		// show window, bring it to foreground and give it focus
-		ShowWindow(m_window_h, SW_SHOW);
+		ShowWindow(m_window_h, SW_SHOW);                    // [braynzar]: pass nCmdShow parameter from WinMain ???
+															// [braynzar]: UpdateWindow(m_window_h);
 		SetForegroundWindow(m_window_h);
 		SetFocus(m_window_h);
 

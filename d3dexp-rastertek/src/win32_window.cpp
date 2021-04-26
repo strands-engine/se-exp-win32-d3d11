@@ -83,7 +83,7 @@ namespace d3dexp
 
 		// show window, bring it to foreground and give it focus
 		ShowWindow(m_window_h, SW_SHOW);                    // [braynzar]: pass nCmdShow parameter from WinMain ???
-															// [braynzar]: UpdateWindow(m_window_h);
+															// [braynzar]: UpdateWindow(m_window_h); - sends WM_PAIN if applicable
 		SetForegroundWindow(m_window_h);
 		SetFocus(m_window_h);
 

@@ -9,7 +9,7 @@
 #pragma comment(lib, "DirectXTK.lib")
 #pragma comment(lib, "DXGI.lib")
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	template <typename T>
 	using com_ptr = Microsoft::WRL::ComPtr<T>;

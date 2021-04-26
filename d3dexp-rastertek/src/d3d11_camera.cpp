@@ -1,6 +1,6 @@
 #include "d3d11_camera.h"
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
     void d3d11_camera::update_view_mx() noexcept
 	{

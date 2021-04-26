@@ -56,7 +56,7 @@
 #include <Windows.h>
 
 #include <wrl/client.h>
-namespace d3dexp
+namespace d3dexp::chili
 {
 	template <typename T>
 	using com_ptr = Microsoft::WRL::ComPtr<T>;

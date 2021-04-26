@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-namespace d3dexp 
+namespace d3dexp::chili
 {
 	using key_code_t = std::uint8_t;
 

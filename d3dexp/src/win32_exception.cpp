@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-namespace d3dexp 
+namespace d3dexp::chili
 {
 
 char const* win32_exception::what() const noexcept

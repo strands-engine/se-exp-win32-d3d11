@@ -9,9 +9,9 @@ int CALLBACK WinMain(_In_ HINSTANCE instance_h, _In_opt_ HINSTANCE prev_instance
 {
 	try
 	{
-		return d3dexp::win32_app{}.run();
+		return d3dexp::chili::win32_app{}.run();
 	}
-	catch (d3dexp::d3d_exception const& e)
+	catch (d3dexp::chili::d3d_exception const& e)
 	{
 		MessageBox(nullptr, e.what(), e.type(), MB_OK | MB_ICONERROR);
 	}

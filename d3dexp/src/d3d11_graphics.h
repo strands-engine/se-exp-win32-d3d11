@@ -3,7 +3,7 @@
 #include "win32_header_wrapper.h"
 #include <d3d11.h>
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	class d3d11_graphics
 	{

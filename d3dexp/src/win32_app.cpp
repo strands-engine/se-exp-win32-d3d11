@@ -6,7 +6,7 @@
 
 #include "win32_exception.h"
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	win32_app::win32_app() : m_window(800, 600, "D3DEXP Main Window") {}
 

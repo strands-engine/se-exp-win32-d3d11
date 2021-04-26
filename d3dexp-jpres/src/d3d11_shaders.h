@@ -7,7 +7,7 @@
 
 #pragma comment(lib, "D3DCompiler.lib")
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	class d3d11_vertex_shader
 	{

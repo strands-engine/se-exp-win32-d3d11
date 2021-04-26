@@ -7,7 +7,7 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	d3d11_graphics::d3d11_graphics(HWND window_h)
 	{

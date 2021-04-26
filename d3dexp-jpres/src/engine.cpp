@@ -1,7 +1,7 @@
 #include "..\..\d3dexp-rastertek\src\engine.h"
 #include "engine.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	bool engine::initialize(HINSTANCE instance_h, std::string title, std::string class_name, int width, int height) noexcept
 	{
@@ -89,17 +89,10 @@ namespace d3dexp
 			msg += std::to_string(e.y_pos());
 			msg += ")\n";
 			OutputDebugStringA(msg.c_str());
-
-
-			// render graphics frame
-			m_graphics.frame();
 		}
 
-	}
-
-	LRESULT engine::message_handler(HWND window_h, UINT msg, WPARAM wparam, LPARAM lparam)
-	{
-		return LRESULT();
+		// render graphics frame
+		m_graphics.frame();
 	}
 
 	bool engine::process_messages() noexcept

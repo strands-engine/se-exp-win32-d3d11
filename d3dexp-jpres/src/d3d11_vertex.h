@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 namespace dxm = DirectX;
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	struct d3d11_vertex_t
 	{

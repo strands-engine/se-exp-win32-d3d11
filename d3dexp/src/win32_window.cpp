@@ -7,7 +7,7 @@
 
 #include "../resource.h"
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 
 	// win32_window::win32_window_class implementation
@@ -179,10 +179,10 @@ namespace d3dexp
 	LRESULT win32_window::handle_message(_In_ HWND wnd_h, _In_ UINT msg_id, _In_ WPARAM wparam, _In_ LPARAM lparam) noexcept
 	{
 #ifdef _DEBUG
-		static d3dexp::win32_debug_message_provider s_msg;
+		static win32_debug_message_provider s_msg;
 #endif // _DEBUG
 
-		static d3dexp::win32_key_code_converter s_kc_conv;
+		static win32_key_code_converter s_kc_conv;
 
 		switch (msg_id)
 		{
@@ -255,7 +255,7 @@ namespace d3dexp
 		case WM_LBUTTONDOWN:
 		{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_mouse_event("left btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::lmb).c_str());
+			OutputDebugString(s_msg.for_mouse_event("left btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), key_t::lmb).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
 			mouse().on_lmb_pressed(pts.x, pts.y);
@@ -265,7 +265,7 @@ namespace d3dexp
 		case WM_LBUTTONUP:
 		{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_mouse_event("left btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::lmb).c_str());
+			OutputDebugString(s_msg.for_mouse_event("left btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), key_t::lmb).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
 			mouse().on_lmb_released(pts.x, pts.y);
@@ -275,7 +275,7 @@ namespace d3dexp
 		case WM_RBUTTONDOWN:
 		{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_mouse_event("right btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::rmb).c_str());
+			OutputDebugString(s_msg.for_mouse_event("right btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), key_t::rmb).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
 			mouse().on_rmb_pressed(pts.x, pts.y);
@@ -285,7 +285,7 @@ namespace d3dexp
 		case WM_RBUTTONUP:
 		{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_mouse_event("right btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::rmb).c_str());
+			OutputDebugString(s_msg.for_mouse_event("right btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), key_t::rmb).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
 			mouse().on_rmb_released(pts.x, pts.y);
@@ -295,7 +295,7 @@ namespace d3dexp
 		case WM_MBUTTONDOWN:
 		{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_mouse_event("mid btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::mmb).c_str());
+			OutputDebugString(s_msg.for_mouse_event("mid btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), key_t::mmb).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
 			mouse().on_mmb_pressed(pts.x, pts.y);
@@ -305,7 +305,7 @@ namespace d3dexp
 		case WM_MBUTTONUP:
 		{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_mouse_event("mid btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::mmb).c_str());
+			OutputDebugString(s_msg.for_mouse_event("mid btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), key_t::mmb).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
 			mouse().on_mmb_released(pts.x, pts.y);
@@ -315,7 +315,7 @@ namespace d3dexp
 		case WM_XBUTTONDOWN:
 		{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_mouse_event("x btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::x1mb).c_str());
+			OutputDebugString(s_msg.for_mouse_event("x btn down", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), key_t::x1mb).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
 			mouse().on_xmb_pressed(pts.x, pts.y);
@@ -325,7 +325,7 @@ namespace d3dexp
 		case WM_XBUTTONUP:
 		{
 #ifdef _DEBUG
-			OutputDebugString(s_msg.for_mouse_event("x btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), d3dexp::key_t::x1mb).c_str());
+			OutputDebugString(s_msg.for_mouse_event("x btn up", GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam), key_t::x1mb).c_str());
 #endif // _DEBUG
 			const POINTS pts = MAKEPOINTS(lparam);
 			mouse().on_xmb_released(pts.x, pts.y);

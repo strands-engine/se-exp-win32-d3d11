@@ -4,7 +4,8 @@
 #include <string>
 #include <unordered_map>
 
-namespace d3dexp {
+namespace d3dexp::chili
+{
 
 	class win32_debug_message_map
 	{

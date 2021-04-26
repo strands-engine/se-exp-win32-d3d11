@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 
 	char const* d3d_exception::what() const noexcept
@@ -13,7 +13,7 @@ namespace d3dexp
 		return m_what_buffer.c_str();
 	}
 
-	std::string d3dexp::d3d_exception::location_desc() const noexcept
+	std::string d3d_exception::location_desc() const noexcept
 	{
 		auto sout = std::ostringstream{};
 		sout << file_name() << ':' << line_no();

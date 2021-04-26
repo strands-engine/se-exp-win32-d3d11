@@ -1,6 +1,6 @@
 #include "engine.h"
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
 	engine::engine(std::wstring const& app_name, d3d11_graphics_settings_t& settings) noexcept
 		: m_window(app_name, settings)

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	class dxgi_debug_info_manager
 	{

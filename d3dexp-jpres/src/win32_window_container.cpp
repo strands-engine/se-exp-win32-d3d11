@@ -4,7 +4,7 @@
 
 #include "error_logger.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	win32_window_container::win32_window_container() noexcept
 	{

@@ -3,7 +3,7 @@
 #include "error_logger.h"
 #include "d3d11_vertex.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	bool d3d11_graphics::initialize(HWND window_h, int width, int height) noexcept
 	{

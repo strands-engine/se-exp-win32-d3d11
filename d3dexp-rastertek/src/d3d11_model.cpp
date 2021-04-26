@@ -1,6 +1,6 @@
 #include "d3d11_model.h"
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
     d3d11_model::d3d11_model(ID3D11Device* device_p) noexcept
     {

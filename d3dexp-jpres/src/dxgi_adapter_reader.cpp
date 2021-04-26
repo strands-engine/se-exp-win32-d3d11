@@ -2,7 +2,7 @@
 
 #include "error_logger.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	dxgi_adapter_data::dxgi_adapter_data(IDXGIAdapter* adapter_p) noexcept
 		: m_adapter_p(adapter_p)

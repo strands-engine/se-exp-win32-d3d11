@@ -3,7 +3,7 @@
 #include "win32_header_wrapper.h"
 #include "d3d_exception.h"
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	class win32_exception : public d3d_exception
 	{
@@ -27,5 +27,5 @@ namespace d3dexp
 
 
 // helper macros
-#define RAISE_WIN32_ERROR( error_code ) throw d3dexp::win32_exception{ __LINE__, __FILE__, (error_code) }
+#define RAISE_WIN32_ERROR( error_code ) throw d3dexp::chili::win32_exception{ __LINE__, __FILE__, (error_code) }
 #define RAISE_WIN32_LAST_ERROR() RAISE_WIN32_ERROR( static_cast<HRESULT>( GetLastError() ) )

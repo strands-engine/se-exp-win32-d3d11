@@ -4,7 +4,7 @@
 
 #include "win32_window.h"
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
 	class engine
 	{

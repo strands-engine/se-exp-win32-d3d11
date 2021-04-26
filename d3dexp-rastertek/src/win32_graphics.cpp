@@ -1,6 +1,6 @@
 #include "win32_graphics.h"
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
     win32_graphics::win32_graphics(HWND window_h, d3d11_graphics_settings_t& settings) noexcept
         : m_d3dgfx(window_h, settings),

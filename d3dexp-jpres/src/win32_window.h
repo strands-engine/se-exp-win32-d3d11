@@ -3,7 +3,7 @@
 #include <string>
 #include <Windows.h>
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	class win32_window_container;
 

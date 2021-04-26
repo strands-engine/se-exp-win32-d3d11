@@ -3,7 +3,7 @@
 #include "timer.h"
 #include "win32_window.h"
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	class win32_app
 	{

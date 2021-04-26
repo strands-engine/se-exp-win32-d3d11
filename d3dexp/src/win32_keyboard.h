@@ -5,7 +5,8 @@
 
 #include "input_types.h"
 
-namespace d3dexp {
+namespace d3dexp::chili
+{
 
 	class win32_keyboard
 	{

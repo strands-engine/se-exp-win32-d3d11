@@ -1,6 +1,6 @@
 #include "win32_mouse.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	win32_mouse_event win32_mouse::read() noexcept
 	{

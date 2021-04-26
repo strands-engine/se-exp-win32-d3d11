@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
 	d3d11_graphics::d3d11_graphics(HWND window_h, d3d11_graphics_settings_t const& settings) noexcept
 		: m_width(settings.width), m_height(settings.height), 

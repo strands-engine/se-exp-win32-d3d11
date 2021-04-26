@@ -2,7 +2,7 @@
 
 #include "win32_key_code_converter.h"
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	[[nodiscard]] key_t win32_key_code_converter::convert(WPARAM wparam, LPARAM lparam) const noexcept
 	{

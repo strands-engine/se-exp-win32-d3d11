@@ -1,6 +1,6 @@
 #include "timer.h"
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	float timer::mark()
 	{

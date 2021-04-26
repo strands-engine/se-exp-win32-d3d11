@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	class timer
 	{

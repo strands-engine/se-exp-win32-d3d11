@@ -5,7 +5,7 @@
 
 #include "win32_window_container.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	win32_window::~win32_window() noexcept
 	{

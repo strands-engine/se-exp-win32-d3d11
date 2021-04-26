@@ -2,7 +2,8 @@
 
 #include <Windows.h>
 
-namespace d3dexp {
+namespace d3dexp::chili
+{
 
 	win32_mouse::win32_mouse_event win32_mouse::read() noexcept
 	{

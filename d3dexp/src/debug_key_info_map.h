@@ -7,7 +7,8 @@
 
 #include "input_types.h"
 
-namespace d3dexp {
+namespace d3dexp::chili
+{
 
 	class debug_key_info_map
 	{

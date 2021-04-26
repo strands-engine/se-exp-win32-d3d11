@@ -5,7 +5,7 @@
 
 #include "d3d11_header_wrapper.h"
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
 	class d3d11_graphics
 	{

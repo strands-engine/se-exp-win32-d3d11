@@ -4,7 +4,7 @@
 #include "d3d11_shaders.h"
 
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	class d3d11_graphics
 	{

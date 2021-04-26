@@ -1,6 +1,6 @@
 #pragma once
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	struct mouse_pos_t
 	{

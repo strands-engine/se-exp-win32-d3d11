@@ -22,7 +22,8 @@
 
 #define REGISTER_MESSAGE(msg){msg,#msg}
 
-namespace d3dexp {
+namespace d3dexp::chili
+{
 
 	win32_debug_message_map::win32_debug_message_map() noexcept :
 		m_map({

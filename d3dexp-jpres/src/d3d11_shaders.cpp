@@ -2,7 +2,7 @@
 
 #include "error_logger.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	bool d3d11_vertex_shader::initialize(com_ptr<ID3D11Device> const& device_p, std::wstring const& path, D3D11_INPUT_ELEMENT_DESC* il_desc_p, UINT il_desc_len) noexcept
 	{

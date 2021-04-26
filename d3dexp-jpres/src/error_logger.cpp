@@ -4,7 +4,7 @@
 
 #include "string_converter.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	void error_logger::log(std::string const& message)
 	{

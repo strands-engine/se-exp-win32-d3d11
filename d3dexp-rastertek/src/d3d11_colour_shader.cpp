@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
     d3d11_colour_shader::d3d11_colour_shader(ID3D11Device* device_p, HWND window_h) noexcept
     {

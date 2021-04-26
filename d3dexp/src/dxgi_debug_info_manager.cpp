@@ -7,7 +7,7 @@
 
 #pragma comment(lib, "dxguid.lib")
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	dxgi_debug_info_manager::dxgi_debug_info_manager()
 	{

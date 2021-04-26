@@ -3,7 +3,7 @@
 #include <exception>
 #include <string>
 
-namespace d3dexp 
+namespace d3dexp::chili
 {
 	class d3d_exception : public std::exception 
 	{
@@ -35,6 +35,6 @@ namespace d3dexp
 	};
 
 	// helper macros
-	#define RAISE_NO_GRAPHICS_ERROR() throw d3dexp::no_graphics_exception{ __LINE__, __FILE__ }
+	#define RAISE_NO_GRAPHICS_ERROR() throw d3dexp::chili::no_graphics_exception{ __LINE__, __FILE__ }
 
 }

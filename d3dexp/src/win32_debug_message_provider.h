@@ -9,7 +9,7 @@
 #include "debug_key_info_map.h"
 
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	class win32_debug_message_provider
 	{

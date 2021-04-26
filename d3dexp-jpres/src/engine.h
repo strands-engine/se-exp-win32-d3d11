@@ -2,7 +2,7 @@
 
 #include "win32_window_container.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	class engine : public win32_window_container
 	{

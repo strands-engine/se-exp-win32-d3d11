@@ -1,6 +1,7 @@
 #include "win32_keyboard.h"
 
-namespace d3dexp {
+namespace d3dexp::chili
+{
 
 	win32_keyboard::win32_keyboard_event win32_keyboard::read_key() noexcept
 	{

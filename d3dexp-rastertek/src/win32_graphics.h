@@ -5,7 +5,7 @@
 #include "d3d11_colour_shader.h"
 #include "d3d11_model.h"
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
 	class win32_graphics
 	{

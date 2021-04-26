@@ -1,6 +1,6 @@
 #include "win32_keyboard.h"
 
-namespace d3dexp 
+namespace d3dexp::jpres
 {
 	win32_keyboard_event win32_keyboard::read_key() noexcept
 	{

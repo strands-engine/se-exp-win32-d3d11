@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	class string_converter
 	{

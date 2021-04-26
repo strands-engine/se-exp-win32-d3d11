@@ -5,7 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
 	class win32_input
 	{

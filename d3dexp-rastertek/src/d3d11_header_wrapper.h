@@ -13,7 +13,7 @@
 
 namespace dxm = DirectX;
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
 	template <typename T>
 	using com_ptr = Microsoft::WRL::ComPtr<T>;

@@ -8,7 +8,7 @@
 #include "win32_debug_message_map.h"
 #include "debug_key_info_map.h"
 
-namespace d3dexp
+namespace d3dexp::chili
 {
 	win32_debug_message_provider::win32_debug_message_provider() noexcept 
 		: msg_map_p(std::make_unique<win32_debug_message_map>()),

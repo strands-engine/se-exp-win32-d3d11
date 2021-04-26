@@ -5,7 +5,7 @@
 #include "win32_mouse.h"
 #include "d3d11_graphics.h"
 
-namespace d3dexp
+namespace d3dexp::jpres
 {
 	class win32_window_container
 	{

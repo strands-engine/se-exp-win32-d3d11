@@ -5,7 +5,7 @@
 
 #define REGISTER_KEY_INFO(key_code, context) {key_t::##key_code, {#key_code, context}}
 
-namespace d3dexp 
+namespace d3dexp::chili
 {
 
 	debug_key_info_map::debug_key_info_map() noexcept :

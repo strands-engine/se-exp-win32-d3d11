@@ -6,7 +6,7 @@
 #include "win32_input.h"
 #include "win32_graphics.h"
 
-namespace d3dexp
+namespace d3dexp::rastertek
 {
 	class win32_window
 	{

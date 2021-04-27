@@ -1,13 +1,32 @@
 #pragma once
 
 #include <exception>
-#include <type_traits>
+#include <typeinfo>
 
 namespace d3dexp::bell0bytes
 {
 
-	// based on Alexandrescu talk: https://channel9.msdn.com/Shows/Going+Deep/C-and-Beyond-2012-Andrei-Alexandrescu-Systematic-Error-Handling-in-C
+	// based on Alexandrescu talks: 
+	//  - https://channel9.msdn.com/Shows/Going+Deep/C-and-Beyond-2012-Andrei-Alexandrescu-Systematic-Error-Handling-in-C
+	// 	- https://www.youtube.com/watch?v=PH4WBuE1BHI&ab_channel=TaoZhou
 	//  as interpreted by bell0bytes
+
+	// adjustments:
+	//  - get rid of from_exception - constructor enabled on classes deriving from std::exception
+	//  - get rid / modify from_code
+	//  - provide constructors with inplace constructible arguments -> universal references galore
+	//  - free functions for raising exceptions (with inplace constructible arguments)
+	//  - default constructor - placement new of default T
+	//  - perf - commenting out if(invalid) rethrow / asserts? 9for *, not for value/result)
+	//  - const -> version
+	//  - alt returns: const RV&& fn() const &&; and RV&& fn() &&;
+	//  - has value - noexcept
+	//  - value_or(dflt)
+	//  - condition for enabling swap (see vid #2 42:16) and changed mixed case (see vid #2 44:00)
+
+	// final proposed version:
+	//  - use int instead of bool (w/alignment little difference) to srore (context-dependent) error code
+	//  - keep using exception_ptr for global catching and transfer across nothrow boundaries
 
 	template<class T>
 	class expected_t
@@ -77,6 +96,7 @@ namespace d3dexp::bell0bytes
 
 		~expected_t() 
 		{
+			using std::exception_ptr;
 			if (has_result())
 			{
 				m_result.~T();
@@ -89,23 +109,37 @@ namespace d3dexp::bell0bytes
 
 	public:
 		template<class E>
-		static [[nodiscard]] expected_t<T> from_exception(E const& exception)
+		static [[nodiscard]] expected_t from_exception(E const& exception)
 		{
-			//if (typeid(exception) != typeid(E))
-			//{
-			//	throw std::invalid_argument("slicing detected!\n");
-			//}
+			if (typeid(exception) != typeid(E))
+			{
+				throw std::invalid_argument("slicing detected!\n");
+			}
 			return from_exception(std::make_exception_ptr(exception));
 		}
-		static [[nodiscard]] expected_t<T> from_exception(std::exception_ptr exception_p)
+		static [[nodiscard]] expected_t from_exception(std::exception_ptr exception_p)
 		{
 			auto exp = expected_t<T>{};
 			new(&exp.m_exception_p) std::exception_ptr(std::move(exception_p));
 			return exp;
 		}
-		static [[nodiscard]] expected_t<T> from_exception()
+		static [[nodiscard]] expected_t from_exception()
 		{
 			return from_exception(std::current_exception());
+		}
+
+		// necessary ???
+		template <class Func>
+		static [[nodiscard]] expected_t from_code(Func fn)
+		{
+			try
+			{
+				return expected_t{ fn() };
+			}
+			catch (...)
+			{
+				return from_exception();
+			}
 		}
 
 	public:

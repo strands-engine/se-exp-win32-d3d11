@@ -3,16 +3,7 @@
 #include <Windows.h>
 
 #include "expected.h"
-
-d3dexp::bell0bytes::expected_t<int> we_hate_four(int x)
-{
-	if (x == 4)
-	{
-		return d3dexp::bell0bytes::expected_t<int>::from_exception(std::invalid_argument("We hate 4!"));
-	}
-	return x;
-}
-
+#include "service_locator.h"
 
 
 int APIENTRY wWinMain(_In_     HINSTANCE instance_h,			// handle to current instance of an application 
@@ -23,9 +14,16 @@ int APIENTRY wWinMain(_In_     HINSTANCE instance_h,			// handle to current inst
 	                  _In_     LPWSTR    argv,					// command line arguments (not separated as in standard main argc-argv)
 	                  _In_     int       cmd_show)				// indicates how app window is to be shown/opened (e.g. minimized or maximized)
 {
-	const auto res = we_hate_four(4);
-	return !res ? static_cast<int>(res.has_exception<std::invalid_argument>()) : *res;
+	try
+	{
+		d3dexp::bell0bytes::service_locator::initialize();
+	}
+	catch (std::runtime_error&)
+	{
+		MessageBox(NULL, L"Failed to initialize logging service.", L"Error", MB_ICONEXCLAMATION | MB_OK);
+		return 1;
+	}
 	
 	
-	//return 0; // should be wparam of WM_QUIT message ( or 0, if not entering message loop)
+	return 0; // should be wparam of WM_QUIT message ( or 0, if not entering message loop)
 }

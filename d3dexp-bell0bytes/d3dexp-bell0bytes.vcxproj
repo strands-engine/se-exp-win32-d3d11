@@ -143,10 +143,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\file_logging_policy.cpp" />
+    <ClCompile Include="src\logger.cpp" />
+    <ClCompile Include="src\service_locator.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\expected.h" />
+    <ClInclude Include="src\file_logging_policy.h" />
+    <ClInclude Include="src\i_logging_policy.h" />
+    <ClInclude Include="src\logger.h" />
+    <ClInclude Include="src\service_locator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

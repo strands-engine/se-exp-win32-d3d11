@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <typeinfo>
+#include <stdexcept>
 
 namespace d3dexp::bell0bytes
 {

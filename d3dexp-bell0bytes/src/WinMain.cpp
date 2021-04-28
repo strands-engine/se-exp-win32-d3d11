@@ -3,8 +3,7 @@
 #include <Windows.h>
 
 #include "expected.h"
-#include "service_locator.h"
-
+#include "app.h"
 
 int APIENTRY wWinMain(_In_     HINSTANCE instance_h,			// handle to current instance of an application 
 					  _In_opt_ HINSTANCE prev_instance_h,		// handle to previous instance of the same app (relic of old 16-bit Windows 
@@ -14,16 +13,24 @@ int APIENTRY wWinMain(_In_     HINSTANCE instance_h,			// handle to current inst
 	                  _In_     LPWSTR    argv,					// command line arguments (not separated as in standard main argc-argv)
 	                  _In_     int       cmd_show)				// indicates how app window is to be shown/opened (e.g. minimized or maximized)
 {
-	try
+	auto my_app = d3dexp::bell0bytes::app{ instance_h };
+	auto init_result = my_app.initialize();
+
+	if (init_result)
 	{
-		d3dexp::bell0bytes::service_locator::initialize();
+		auto run_result = my_app.run();
+
+		// cleanup
+		// horrifying cast - even reinterpret_cast won't allow it
+		// my_app.shutdown(&((d3dexp::bell0bytes::expected_t<void>)run_result));
+		my_app.shutdown(); // no error handling
+		return *run_result;
 	}
-	catch (std::runtime_error&)
+	else
 	{
-		MessageBox(NULL, L"Failed to initialize logging service.", L"Error", MB_ICONEXCLAMATION | MB_OK);
-		return 1;
+		my_app.shutdown(&init_result);
+		return -1;
 	}
-	
 	
 	return 0; // should be wparam of WM_QUIT message ( or 0, if not entering message loop)
 }

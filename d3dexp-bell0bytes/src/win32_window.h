@@ -33,9 +33,14 @@ namespace d3dexp::bell0bytes
 	private:
 		expected_t<void> initialize();
 
+		void load_settings();
+
 	private:
 		HWND m_window_h = NULL;
 		win32_app* m_app_p = nullptr;
+
+		int m_width = 800;
+		int m_height = 600;
 
 	};
 }

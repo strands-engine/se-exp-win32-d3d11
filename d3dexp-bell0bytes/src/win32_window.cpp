@@ -3,6 +3,11 @@
 #include <string>
 #include <stdexcept>
 
+#include <lua.hpp>
+#pragma comment(lib, "liblua54.a") 
+#include <sol/sol.hpp>
+
+#include "string_converter.h"
 #include "win32_app.h"
 
 namespace d3dexp::bell0bytes
@@ -61,6 +66,11 @@ namespace d3dexp::bell0bytes
 			return std::runtime_error("The window class could not be registered.");
 		}
 
+		// loading and setting up window size
+		load_settings();
+		auto rect = RECT{ 0, 0, m_width, m_height };
+		AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, FALSE, WS_EX_OVERLAPPEDWINDOW);
+
 		// create the window
 		m_window_h = CreateWindowEx(
 			WS_EX_OVERLAPPEDWINDOW,				// overlapped window - with all shiny thingies
@@ -69,8 +79,8 @@ namespace d3dexp::bell0bytes
 			WS_OVERLAPPEDWINDOW, 
 			CW_USEDEFAULT,						// leave system decision of initial placement position and size
 			CW_USEDEFAULT, 
-			CW_USEDEFAULT, 
-			CW_USEDEFAULT, 
+			rect.right - rect.left, 
+			rect.bottom - rect.top, 
 			NULL, 
 			NULL, 
 			m_app_p->m_instance_h, 
@@ -106,6 +116,24 @@ namespace d3dexp::bell0bytes
 
 		// let Windows handle other messages
 		return DefWindowProc(window_h, msg, wparam, lparam);
+	}
+
+	void win32_window::load_settings()
+	{
+		auto path = m_app_p->m_settings_path + L"\\settings.lua";
+		try
+		{
+			auto lua = sol::state{};
+			lua.script_file(string_converter::to_string(path));
+
+			// read from the configuration file, default to 800 x 600
+			m_width = lua["config"]["window"]["width"].get_or(800);
+			m_height = lua["config"]["window"]["height"].get_or(600);
+		}
+		catch (std::exception) 
+		{
+			OutputDebugStringA("Failed to load window settings. Using default 800x600 size.");
+		}
 	}
 
 }

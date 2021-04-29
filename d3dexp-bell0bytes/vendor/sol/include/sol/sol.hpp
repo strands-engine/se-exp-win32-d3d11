@@ -3856,7 +3856,7 @@ namespace sol {
 		struct error_result {
 			int results;
 			const char* format_string;
-			std::array<const char*, 4> args_strings;
+			std::array<const char*, 4> args_strings = {};
 
 			error_result() : results(0), format_string(nullptr) {
 			}
@@ -21871,7 +21871,7 @@ namespace sol { namespace u_detail {
 		usertype_storage_base* p_usb = nullptr;
 		void* p_derived_usb = nullptr;
 		lua_CFunction idx_call = nullptr, new_idx_call = nullptr, meta_idx_call = nullptr, meta_new_idx_call = nullptr;
-		change_indexing_mem_func change_indexing;
+		change_indexing_mem_func change_indexing = {};
 
 		void operator()(lua_State* L, submetatable_type smt, reference& fast_index_table) {
 			std::string& key = *p_key;
@@ -26025,7 +26025,7 @@ namespace sol {
 		state(const state&) = delete;
 		state(state&&) = default;
 		state& operator=(const state&) = delete;
-		state& operator=(state&& that) {
+		state& operator=(state&& that) noexcept {
 			state_view::operator=(std::move(that));
 			unique_base::operator=(std::move(that));
 			return *this;
@@ -26427,7 +26427,7 @@ namespace sol {
 		}
 		variadic_args(const variadic_args&) = default;
 		variadic_args& operator=(const variadic_args&) = default;
-		variadic_args(variadic_args&& o)
+		variadic_args(variadic_args&& o) noexcept
 			: L(o.L), index(o.index), stacktop(o.stacktop) {
 			// Must be manual, otherwise destructor will screw us
 			// return count being 0 is enough to keep things clean
@@ -26436,7 +26436,7 @@ namespace sol {
 			o.index = 0;
 			o.stacktop = 0;
 		}
-		variadic_args& operator=(variadic_args&& o) {
+		variadic_args& operator=(variadic_args&& o) noexcept {
 			L = o.L;
 			index = o.index;
 			stacktop = o.stacktop;

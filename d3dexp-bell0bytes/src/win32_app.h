@@ -30,8 +30,16 @@ namespace d3dexp::bell0bytes
 		virtual expected_t<void> initialize();
 		virtual void shutdown(expected_t<void>* expected = nullptr);
 
+		bool setup_mydocs_path();
+		bool check_settings_file();
+
 	protected:
 		HINSTANCE m_instance_h = NULL;
 		std::unique_ptr<win32_window> m_window_p = nullptr;
+
+		std::wstring m_mydocs_path = std::wstring{};
+		std::wstring m_settings_path = std::wstring{};
+
+		bool m_is_settings_file_valid = false;
 	};
 }

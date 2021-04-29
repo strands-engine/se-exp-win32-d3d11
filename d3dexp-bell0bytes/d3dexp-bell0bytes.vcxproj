@@ -78,9 +78,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\repos\se-exp-win32-d3d11\d3dexp-bell0bytes\vendor\lua\x64\include;$(IncludePath)</IncludePath>
+    <ReferencePath>D:\repos\se-exp-win32-d3d11\d3dexp-bell0bytes\vendor\lua\x64;$(ReferencePath)</ReferencePath>
+    <LibraryPath>D:\repos\se-exp-win32-d3d11\d3dexp-bell0bytes\vendor\lua\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>D:\repos\se-exp-win32-d3d11\d3dexp-bell0bytes\vendor\lua\x64\include;$(IncludePath)</IncludePath>
+    <ReferencePath>D:\repos\se-exp-win32-d3d11\d3dexp-bell0bytes\vendor\lua\x64;$(ReferencePath)</ReferencePath>
+    <LibraryPath>D:\repos\se-exp-win32-d3d11\d3dexp-bell0bytes\vendor\lua\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

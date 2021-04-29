@@ -7,6 +7,7 @@
 
 #include <lua.hpp>
 #pragma comment(lib, "liblua54.a") 
+#include <sol/sol.hpp>
 
 int APIENTRY wWinMain(_In_     HINSTANCE instance_h,			// handle to current instance of an application 
 					  _In_opt_ HINSTANCE prev_instance_h,		// handle to previous instance of the same app (relic of old 16-bit Windows 
@@ -18,9 +19,6 @@ int APIENTRY wWinMain(_In_     HINSTANCE instance_h,			// handle to current inst
 {
 	auto my_app = d3dexp::bell0bytes::app{ instance_h };
 	auto init_result = my_app.initialize();
-
-	lua_State* state = luaL_newstate();
-	lua_close(state);
 
 	if (init_result)
 	{

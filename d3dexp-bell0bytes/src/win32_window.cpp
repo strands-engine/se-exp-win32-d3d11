@@ -112,6 +112,95 @@ namespace d3dexp::bell0bytes
 			PostQuitMessage(0);
 			return 0;
 		}
+
+		case WM_MENUCHAR:
+		{
+			// disable system noises on app menu mnemonics
+			return MAKELRESULT(0, MNC_CLOSE);
+		}
+
+		case WM_ACTIVATE:
+		{
+			// respond to change of window activity status by pausing/unpausing running app
+			m_app_p->m_is_paused = LOWORD(wparam) == WA_INACTIVE;
+			return 0;
+		}
+
+		case WM_SIZE:
+		{
+			// respond to resizing of the client window
+			switch (wparam)
+			{
+			case SIZE_MINIMIZED:
+			{
+				m_is_minimized = true;
+				m_is_maximized = false;
+				m_app_p->m_is_paused = true;
+				break;
+			}
+			case SIZE_MAXIMIZED:
+			{
+				m_is_minimized = false;
+				m_is_maximized = true;
+				m_app_p->m_is_paused = false;
+				m_app_p->on_resize();
+				break;
+			}
+			case SIZE_RESTORED:
+			{
+				if (m_is_minimized)
+				{
+					m_is_minimized = false;
+					m_app_p->m_is_paused = false;
+					m_app_p->on_resize();
+				}
+				else if (m_is_maximized)
+				{
+					m_is_maximized = false;
+					m_app_p->m_is_paused = false;
+					m_app_p->on_resize();
+				}
+				else if (m_is_resizing)
+				{
+					// do nothing until resizing and/or dragging stops
+				}
+				else
+				{
+					m_app_p->on_resize();
+				}
+				break;
+			}
+			default:
+				break;
+			}
+			return 0;
+		}
+
+		case WM_ENTERSIZEMOVE:
+		{
+			// user starts to resize/drag window
+			m_is_resizing = true;
+			m_app_p->m_is_paused = true;
+			return 0;
+		}
+
+		case WM_EXITSIZEMOVE:
+		{
+			m_is_resizing = false;
+			m_app_p->m_is_paused = false;
+			m_app_p->on_resize();
+			return 0;
+		}
+
+		case WM_GETMINMAXINFO:
+		{
+			// received before commencing resize - may be used to set minimum or maximum possible window size that user is allowed to achieve
+			const auto mminfo_p = reinterpret_cast<MINMAXINFO*>(lparam);
+			mminfo_p->ptMinTrackSize.x = 200;
+			mminfo_p->ptMinTrackSize.y = 200;
+			return 0;
+		}
+
 		}
 
 		// let Windows handle other messages

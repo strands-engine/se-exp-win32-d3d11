@@ -33,6 +33,8 @@ namespace d3dexp::bell0bytes
 		bool setup_mydocs_path();
 		bool check_settings_file();
 
+		void on_resize();
+
 	protected:
 		HINSTANCE m_instance_h = NULL;
 		std::unique_ptr<win32_window> m_window_p = nullptr;
@@ -41,5 +43,6 @@ namespace d3dexp::bell0bytes
 		std::wstring m_settings_path = std::wstring{};
 
 		bool m_is_settings_file_valid = false;
+		bool m_is_paused = false;
 	};
 }

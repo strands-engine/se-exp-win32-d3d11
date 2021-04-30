@@ -36,6 +36,11 @@ namespace d3dexp::bell0bytes
 					is_running = false;
 				}
 			}
+
+			if (!m_is_paused)
+			{
+				// insert app logic here
+			}
 		}
 		return static_cast<int>(msg.wParam);
 	}
@@ -139,4 +144,10 @@ namespace d3dexp::bell0bytes
 		m_is_settings_file_valid = true;
 		return true;
 	}
+
+	void win32_app::on_resize()
+	{
+		OutputDebugStringA("Window being resized!\n");
+	}
+
 }

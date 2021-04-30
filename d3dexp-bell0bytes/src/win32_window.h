@@ -42,5 +42,8 @@ namespace d3dexp::bell0bytes
 		int m_width = 800;
 		int m_height = 600;
 
+		bool m_is_minimized = false;
+		bool m_is_maximized = false;
+		bool m_is_resizing = false;
 	};
 }

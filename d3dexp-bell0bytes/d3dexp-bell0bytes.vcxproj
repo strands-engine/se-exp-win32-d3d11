@@ -155,6 +155,7 @@
     <ClCompile Include="src\service_locator.cpp" />
     <ClCompile Include="src\string_converter.cpp" />
     <ClCompile Include="src\win32_app.cpp" />
+    <ClCompile Include="src\win32_timer.cpp" />
     <ClCompile Include="src\win32_window.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
@@ -167,6 +168,7 @@
     <ClInclude Include="src\service_locator.h" />
     <ClInclude Include="src\string_converter.h" />
     <ClInclude Include="src\win32_app.h" />
+    <ClInclude Include="src\win32_timer.h" />
     <ClInclude Include="src\win32_window.h" />
   </ItemGroup>
   <ItemGroup>

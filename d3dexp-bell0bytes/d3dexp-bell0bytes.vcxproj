@@ -160,6 +160,7 @@
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\expected.h" />
     <ClInclude Include="src\file_logging_policy.h" />
@@ -173,6 +174,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config\settings.lua" />
+    <None Include="res\cursors\Party Hat Green.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="d3dexp-bell0bytes.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\icons\barking_dog.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

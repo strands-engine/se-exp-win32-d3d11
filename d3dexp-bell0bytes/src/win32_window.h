@@ -35,6 +35,9 @@ namespace d3dexp::bell0bytes
 
 		void load_settings();
 
+		HICON load_icon_resource(int resource_id) const;
+		HCURSOR load_cursor_resource(int resource_id) const;
+
 	private:
 		HWND m_window_h = NULL;
 		win32_app* m_app_p = nullptr;

@@ -10,6 +10,8 @@
 #include "string_converter.h"
 #include "win32_app.h"
 
+#include "../resource.h"
+
 namespace d3dexp::bell0bytes
 {
 	win32_window* s_main_window = nullptr;
@@ -47,13 +49,16 @@ namespace d3dexp::bell0bytes
 		// specify the window class description
 		auto wc = WNDCLASSEX{};
 
+		auto icon_h = load_icon_resource(IDI_ICON1);
+		auto cursor_h = load_cursor_resource(IDC_CURSOR1);
+
 		wc.cbClsExtra = 0;										// no extra bytes needed
 		wc.cbSize = sizeof(WNDCLASSEX);							// size of the window description structure
 		wc.cbWndExtra = 0;										// no extra bytes needed
 		wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);	// brush to repaint the background with
-		wc.hCursor = LoadCursor(0, IDC_ARROW);					// load the standard arrow cursor
-		wc.hIcon = LoadIcon(0, IDI_APPLICATION);				// load the standard application icon
-		wc.hIconSm = LoadIcon(0, IDI_APPLICATION);				// load the standard small application icon
+		wc.hCursor = cursor_h;									// load custom arrow cursor
+		wc.hIcon = icon_h;										// load custom application icon
+		wc.hIconSm = icon_h;									// load custom small application icon
 		wc.hInstance = m_app_p->m_instance_h;					// handle to the core application instance
 		wc.lpfnWndProc = main_wnd_proc;							// window procedure function
 		wc.lpszClassName = L"D3DEXP bell0bytes";				// class name
@@ -245,5 +250,28 @@ namespace d3dexp::bell0bytes
 			OutputDebugStringA("Failed to load window settings. Using default 800x600 size.");
 		}
 	}
+
+	HICON win32_window::load_icon_resource(int resource_id) const
+	{
+		return static_cast<HICON>(LoadImage(
+			m_app_p->m_instance_h,
+			MAKEINTRESOURCE(resource_id),
+			IMAGE_ICON,
+			LR_DEFAULTSIZE,
+			LR_DEFAULTSIZE,
+			LR_DEFAULTCOLOR | LR_SHARED));
+	}
+
+	HICON win32_window::load_cursor_resource(int resource_id) const
+	{
+		return static_cast<HCURSOR>(LoadImage(
+			m_app_p->m_instance_h,
+			MAKEINTRESOURCE(resource_id),
+			IMAGE_CURSOR,
+			LR_DEFAULTSIZE,
+			LR_DEFAULTSIZE,
+			LR_DEFAULTCOLOR | LR_SHARED));
+	}
+
 
 }

@@ -146,7 +146,7 @@ namespace d3dexp::rastertek
 		sc_desc.Flags = 0;															// no extra option flags
 
 		// choose desired feature level
-		D3D_FEATURE_LEVEL desired_feature_levels[] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_11_1 };
+		D3D_FEATURE_LEVEL desired_feature_levels[] = { D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0 };
 		auto used_feature_level = D3D_FEATURE_LEVEL{};
 
 		// create device, device context and swap chain

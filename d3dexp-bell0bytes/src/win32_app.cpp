@@ -23,11 +23,23 @@ namespace d3dexp::bell0bytes
 		shutdown();
 	}
 
+	// NOTE 1: consider separate update functions for per-frame and fixed time steps
+	// NOTE 2: farseer loop - do as many fixed time updates as they fit into single frame:
+	//                        -> accumulating frame time (t_a) - how far ahead the next rendered frame is - it is passed to render normalized by fixed_dt to be in [0, 1) range (rendering function needs to look a bit into future ???) - interpolation of positions/velocities
+	// NOTE 3: possible issues - failing vsync / multithreading
+	// NOTE 4: ppossible further sources-
+	//           ->	Game Programming Algorithms and Techniques, by Sanjay Madhav
+	//           ->	Game Programming Patterns, by Robert Nystrom
+	//           ->	Tricks of the Windows Game Programming Gurus, by André LaMothe
 	expected_t<int> win32_app::run()
 	{
+		// setup main app timer
 		m_timer.reset();
 
+		auto accumulated_frame_time = double{}; // time spent on updates before going to rendering
+		auto update_loop_count = int{};        // number of updates performed before render
 		auto is_running = true;
+
 		auto msg = MSG{};
 
 		// main loop
@@ -44,6 +56,7 @@ namespace d3dexp::bell0bytes
 				}
 			}
 
+			// tick tock
 			m_timer.update();
 
 			if (!m_is_paused)
@@ -52,12 +65,23 @@ namespace d3dexp::bell0bytes
 				calculate_frame_stats();
 				debug_show_frame_stats(m_window_p->handle());
 #endif
-				// process input
+				// acquire input
 
-				// update game logic
-				update(m_timer.delta_time());
+				// accumulate time elapsed since last frame
+				accumulated_frame_time += m_timer.delta_time();
 
-				// generate output
+				// update objects with fixed delta time as often as possible
+				update_loop_count = 0;
+				while (accumulated_frame_time >= m_fixed_delta_time && update_loop_count < m_max_skipped_frames)
+				{
+					update(m_fixed_delta_time);
+					accumulated_frame_time -= m_fixed_delta_time;
+					update_loop_count++;
+				}
+
+				// generate output (peeking into future?)
+				render(accumulated_frame_time / m_fixed_delta_time);
+
 			}
 		}
 		return static_cast<int>(msg.wParam);
@@ -71,22 +95,22 @@ namespace d3dexp::bell0bytes
 			return std::runtime_error("Failed to establish path to 'My Documents' folder.");
 		}
 
-if (!check_settings_file())
-{
-	OutputDebugStringA("Missing or invalid settings file. Using defaults.");
-}
+		if (!check_settings_file())
+		{
+			OutputDebugStringA("Missing or invalid settings file. Using defaults.");
+		}
 
-try
-{
-	m_window_p = std::make_unique<win32_window>(this);
-}
-catch (std::runtime_error&)
-{
-	return std::runtime_error("Failed to create main window.");
-}
+		try
+		{
+			m_window_p = std::make_unique<win32_window>(this);
+		}
+		catch (std::runtime_error&)
+		{
+			return std::runtime_error("Failed to create main window.");
+		}
 
-OutputDebugStringA("Win32 app successfully initialized.\n");
-return {};
+		OutputDebugStringA("Win32 app successfully initialized.\n");
+		return {};
 	}
 
 	void win32_app::shutdown(expected_t<void>* expected)
@@ -115,6 +139,21 @@ return {};
 		m_settings_path = L"D:\\repos\\se-exp-win32-d3d11\\d3dexp-bell0bytes\\config";
 
 		return true;
+	}
+
+	void win32_app::update(double dt)
+	{
+
+	}
+
+	void win32_app::render(double farseer)
+	{
+
+	}
+
+	void win32_app::on_resize()
+	{
+		OutputDebugStringA("Window being resized!\n");
 	}
 
 	bool win32_app::check_settings_file()
@@ -198,16 +237,6 @@ return {};
 
 			m_is_frame_stats_updated = false;
 		}
-	}
-
-	void win32_app::update(double dt)
-	{
-
-	}
-
-	void win32_app::on_resize()
-	{
-		OutputDebugStringA("Window being resized!\n");
 	}
 
 }

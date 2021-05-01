@@ -31,30 +31,38 @@ namespace d3dexp::bell0bytes
 		virtual expected_t<void> initialize();
 		virtual void shutdown(expected_t<void>* expected = nullptr);
 
+		virtual void update(double dt);
+		virtual void render(double farseer);
+
+		void on_resize();
+
+	private:
 		bool setup_mydocs_path();
 		bool check_settings_file();
 
 		void calculate_frame_stats();
 		void debug_show_frame_stats(HWND window_h);
 
-		virtual void update(double dt);
-
-		void on_resize();
-
 	protected:
 		HINSTANCE m_instance_h = NULL;
 		std::unique_ptr<win32_window> m_window_p = nullptr;
 
+	private:
 		win32_timer m_timer;
 
 		std::wstring m_mydocs_path = std::wstring{};
 		std::wstring m_settings_path = std::wstring{};
+
+		double m_fixed_delta_time = 1.0 / 240.0;      // fixed time frame for 240 fps
+		double m_max_skipped_frames = 10.0;
 
 		double m_milliseconds_per_frame = 0.0;
 		int m_frames_per_second = 0;
 
 		bool m_is_frame_stats_updated = true;
 		bool m_is_settings_file_valid = false;
+
+	protected:
 		bool m_is_paused = false;
 	};
 }

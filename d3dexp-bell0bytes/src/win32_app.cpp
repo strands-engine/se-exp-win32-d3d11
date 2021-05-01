@@ -109,6 +109,7 @@ namespace d3dexp::bell0bytes
 			return std::runtime_error("Failed to create main window.");
 		}
 
+		m_has_started = true;
 		OutputDebugStringA("Win32 app successfully initialized.\n");
 		return {};
 	}
@@ -149,6 +150,21 @@ namespace d3dexp::bell0bytes
 	void win32_app::render(double farseer)
 	{
 
+	}
+
+	void win32_app::on_key_down(WPARAM wparam, LPARAM lparam)
+	{
+		switch (wparam)
+		{
+
+		case VK_ESCAPE:
+		{
+			PostMessage(m_window_p->handle(), WM_CLOSE, 0, 0);
+			break;
+		}
+		default:
+			break;
+		}
 	}
 
 	void win32_app::on_resize()

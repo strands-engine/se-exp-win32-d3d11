@@ -123,6 +123,16 @@ namespace d3dexp::bell0bytes
 		{
 			// respond to change of window activity status by pausing/unpausing running app
 			m_app_p->m_is_paused = LOWORD(wparam) == WA_INACTIVE;
+			
+			// should be merged into is_paused setter
+			if (LOWORD(wparam) == WA_INACTIVE)
+			{
+				m_app_p->m_timer.pause();
+			}
+			else if (m_app_p->m_has_started)
+			{
+				m_app_p->m_timer.start();
+			}
 			return 0;
 		}
 
@@ -136,6 +146,7 @@ namespace d3dexp::bell0bytes
 				m_is_minimized = true;
 				m_is_maximized = false;
 				m_app_p->m_is_paused = true;
+				m_app_p->m_timer.pause();
 				break;
 			}
 			case SIZE_MAXIMIZED:
@@ -143,6 +154,7 @@ namespace d3dexp::bell0bytes
 				m_is_minimized = false;
 				m_is_maximized = true;
 				m_app_p->m_is_paused = false;
+				m_app_p->m_timer.start();
 				m_app_p->on_resize();
 				break;
 			}
@@ -152,12 +164,14 @@ namespace d3dexp::bell0bytes
 				{
 					m_is_minimized = false;
 					m_app_p->m_is_paused = false;
+					m_app_p->m_timer.start();
 					m_app_p->on_resize();
 				}
 				else if (m_is_maximized)
 				{
 					m_is_maximized = false;
 					m_app_p->m_is_paused = false;
+					m_app_p->m_timer.start();
 					m_app_p->on_resize();
 				}
 				else if (m_is_resizing)
@@ -181,6 +195,7 @@ namespace d3dexp::bell0bytes
 			// user starts to resize/drag window
 			m_is_resizing = true;
 			m_app_p->m_is_paused = true;
+			m_app_p->m_timer.pause();
 			return 0;
 		}
 
@@ -188,6 +203,7 @@ namespace d3dexp::bell0bytes
 		{
 			m_is_resizing = false;
 			m_app_p->m_is_paused = false;
+			m_app_p->m_timer.start();
 			m_app_p->on_resize();
 			return 0;
 		}
@@ -199,6 +215,11 @@ namespace d3dexp::bell0bytes
 			mminfo_p->ptMinTrackSize.x = 200;
 			mminfo_p->ptMinTrackSize.y = 200;
 			return 0;
+		}
+
+		case WM_KEYDOWN:
+		{
+			m_app_p->on_key_down(wparam, lparam);
 		}
 
 		}

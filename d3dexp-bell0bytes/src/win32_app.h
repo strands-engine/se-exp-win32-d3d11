@@ -34,7 +34,10 @@ namespace d3dexp::bell0bytes
 		virtual void update(double dt);
 		virtual void render(double farseer);
 
+		virtual void on_key_down(WPARAM wparam, LPARAM lparam);
+
 		void on_resize();
+
 
 	private:
 		bool setup_mydocs_path();
@@ -46,10 +49,9 @@ namespace d3dexp::bell0bytes
 	protected:
 		HINSTANCE m_instance_h = NULL;
 		std::unique_ptr<win32_window> m_window_p = nullptr;
-
-	private:
 		win32_timer m_timer;
 
+	private:
 		std::wstring m_mydocs_path = std::wstring{};
 		std::wstring m_settings_path = std::wstring{};
 
@@ -64,5 +66,6 @@ namespace d3dexp::bell0bytes
 
 	protected:
 		bool m_is_paused = false;
+		bool m_has_started = false;
 	};
 }

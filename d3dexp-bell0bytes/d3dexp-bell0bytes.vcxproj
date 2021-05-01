@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
+    <ClCompile Include="src\d3d11_graphics.cpp" />
     <ClCompile Include="src\file_logging_policy.cpp" />
     <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\service_locator.cpp" />
@@ -162,6 +163,7 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\app.h" />
+    <ClInclude Include="src\d3d11_graphics.h" />
     <ClInclude Include="src\expected.h" />
     <ClInclude Include="src\file_logging_policy.h" />
     <ClInclude Include="src\i_logging_policy.h" />

@@ -109,6 +109,15 @@ namespace d3dexp::bell0bytes
 			return std::runtime_error("Failed to create main window.");
 		}
 
+		try
+		{
+			m_graphics_p = std::make_unique<d3d11_graphics>(this);
+		}
+		catch (std::runtime_error&)
+		{
+			return std::runtime_error("Failed to initialize D3D11 graphics.");
+		}
+
 		m_has_started = true;
 		OutputDebugStringA("Win32 app successfully initialized.\n");
 		return {};
@@ -147,9 +156,16 @@ namespace d3dexp::bell0bytes
 
 	}
 
-	void win32_app::render(double farseer)
+	expected_t<int> win32_app::render(double farseer)
 	{
+		// after drawing present the scene to front buffer
+		auto result = m_graphics_p->present();
+		if (!result)
+		{
+			return std::runtime_error{ "Failed to present the scene!" };
+		}
 
+		return 0;
 	}
 
 	void win32_app::on_key_down(WPARAM wparam, LPARAM lparam)
@@ -170,6 +186,10 @@ namespace d3dexp::bell0bytes
 	void win32_app::on_resize()
 	{
 		OutputDebugStringA("Window being resized!\n");
+		if (m_has_started)
+		{
+			m_graphics_p->on_resize();
+		}
 	}
 
 	bool win32_app::check_settings_file()

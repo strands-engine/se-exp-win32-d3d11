@@ -5,6 +5,7 @@
 
 #include "win32_window.h"
 #include "win32_timer.h"
+#include "d3d11_graphics.h"
 
 namespace d3dexp::bell0bytes
 {
@@ -27,12 +28,15 @@ namespace d3dexp::bell0bytes
 	protected:
 		expected_t<int> run();
 
+	public:
+		[[nodiscard]] HWND window_handle() const noexcept { return m_window_p->handle(); }
+
 	protected:
 		virtual expected_t<void> initialize();
 		virtual void shutdown(expected_t<void>* expected = nullptr);
 
 		virtual void update(double dt);
-		virtual void render(double farseer);
+		virtual expected_t<int> render(double farseer);
 
 		virtual void on_key_down(WPARAM wparam, LPARAM lparam);
 
@@ -49,6 +53,7 @@ namespace d3dexp::bell0bytes
 	protected:
 		HINSTANCE m_instance_h = NULL;
 		std::unique_ptr<win32_window> m_window_p = nullptr;
+		std::unique_ptr<d3d11_graphics> m_graphics_p = nullptr;
 		win32_timer m_timer;
 
 	private:

@@ -38,6 +38,7 @@ namespace d3dexp::bell0bytes
 		~d3d11_graphics() noexcept = default;
 
 	public:
+		void clear_buffers();
 		expected_t<int> present();
 
 	private:
@@ -48,6 +49,9 @@ namespace d3dexp::bell0bytes
 		com_ptr<ID3D11Device> m_device_p = nullptr;
 		com_ptr<ID3D11DeviceContext> m_context_p = nullptr;
 		com_ptr<IDXGISwapChain> m_swap_chain_p = nullptr;
+		
+		com_ptr<ID3D11RenderTargetView> m_rtv_p = nullptr;
+		com_ptr<ID3D11DepthStencilView> m_dsv_p = nullptr;
 
 		win32_app* m_app_p;
 

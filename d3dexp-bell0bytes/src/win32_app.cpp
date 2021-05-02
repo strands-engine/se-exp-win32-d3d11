@@ -158,6 +158,10 @@ namespace d3dexp::bell0bytes
 
 	expected_t<int> win32_app::render(double farseer)
 	{
+		// clear buffers to prepare for drawing new frame
+		m_graphics_p->clear_buffers();
+
+
 		// after drawing present the scene to front buffer
 		auto result = m_graphics_p->present();
 		if (!result)

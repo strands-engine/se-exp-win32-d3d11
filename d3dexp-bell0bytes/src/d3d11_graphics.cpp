@@ -54,7 +54,17 @@ namespace d3dexp::bell0bytes
 			throw std::runtime_error{ "Creation of D3D11 resources failed." };
 		}
 
-		OutputDebugStringA("D3D11 successfully initialized");
+		OutputDebugStringA("D3D11 successfully initialized.\n");
+	}
+
+	void d3d11_graphics::clear_buffers()
+	{
+		// clear back buffer to given colour
+		const float colour[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+		m_context_p->ClearRenderTargetView(m_rtv_p.Get(), colour);
+
+		// clear depth buffer to 1 and stencil buffer to 0
+		m_context_p->ClearDepthStencilView(m_dsv_p.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
 	}
 
 	expected_t<int> d3d11_graphics::present() 
@@ -123,8 +133,14 @@ namespace d3dexp::bell0bytes
 		return {};
 	}
 
+	// NOTE: If window dimensions were not changed, entire d3d stuf fshould not be recreated (???)
 	expected_t<void> d3d11_graphics::on_resize()
 	{
+		// clear context state
+		m_context_p->ClearState();
+		m_rtv_p.Reset();
+		m_dsv_p.Reset();
+
 		// resize swap chain buffers to comply with current window size
 		auto hr = m_swap_chain_p->ResizeBuffers(
 			0,											// number of buffers (0 - all)												
@@ -133,6 +149,44 @@ namespace d3dexp::bell0bytes
 			DXGI_FORMAT_UNKNOWN,						// pixel format (UNKNOWN - do not change)
 			0);											// change flags - no changes
 		if (FAILED(hr)) return std::runtime_error{ "Direct3D was unable to resize the swap chain!" };
+
+		// recreate render target view for new back buffer texture resource
+		auto back_buffer_p = com_ptr<ID3D11Texture2D>{};
+		hr = m_swap_chain_p->GetBuffer(0, __uuidof(ID3D11Texture2D), to_pp(back_buffer_p));
+		if (FAILED(hr)) return std::runtime_error{ "Direct3D was unable to acquire the back buffer!" };
+		hr = m_device_p->CreateRenderTargetView(back_buffer_p.Get(), nullptr, &m_rtv_p);
+		if (FAILED(hr)) return std::runtime_error{ "Direct3D was unable to create the render target view!" };
+
+		// recreate depth/stencil buffer and a view for it
+
+		// setup buffer description
+		// NOTE: we take description of backbuffer as it shares most option with what we require for deph/stencil buffer
+		auto ds_desc = D3D11_TEXTURE2D_DESC{};
+		back_buffer_p->GetDesc(&ds_desc);
+		ds_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		ds_desc.Usage = D3D11_USAGE_DEFAULT;
+		ds_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+		// create ds buffer and view
+		auto ds_buffer_p = com_ptr<ID3D11Texture2D>{};
+		hr = m_device_p->CreateTexture2D(&ds_desc, nullptr, &ds_buffer_p);
+		if (FAILED(hr)) return std::runtime_error("Direct3D was unable to create a 2D-texture!");
+		hr = m_device_p->CreateDepthStencilView(ds_buffer_p.Get(), nullptr, &m_dsv_p);
+		if (FAILED(hr)) return std::runtime_error("Direct3D was unable to create the depth and stencil buffer!");
+
+		// bind render target view and dept/stencil view to pipeline (OM)
+		m_context_p->OMSetRenderTargets(1u, m_rtv_p.GetAddressOf(), m_dsv_p.Get());
+
+		// setup vievport options and set it in the pipeline (RS)
+		auto vp = D3D11_VIEWPORT{};
+		vp.TopLeftX = 0.0f;
+		vp.TopLeftY = 0.0f;
+		vp.Width = static_cast<float>(ds_desc.Width);
+		vp.Height = static_cast<float>(ds_desc.Height);
+		vp.MinDepth = 0.0f;
+		vp.MaxDepth = 1.0f;
+
+		m_context_p->RSSetViewports(1u, &vp);
 
 		return {};
 	}

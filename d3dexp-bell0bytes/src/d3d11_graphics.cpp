@@ -1,6 +1,7 @@
 #include "d3d11_graphics.h"
 
 #include <stdexcept>
+#include <fstream>
 
 #include "win32_app.h"
 
@@ -54,6 +55,14 @@ namespace d3dexp::bell0bytes
 			throw std::runtime_error{ "Creation of D3D11 resources failed." };
 		}
 
+		// as device and context are available, initialize rendering pipeline
+		if (!initialize_pipeline())
+		{
+			OutputDebugStringA("Initialization of D3D11 pipeline failed.");
+			throw std::runtime_error{ "Initialization of D3D11 pipeline failed." };
+		}
+
+
 		OutputDebugStringA("D3D11 successfully initialized.\n");
 	}
 
@@ -78,6 +87,9 @@ namespace d3dexp::bell0bytes
 			OutputDebugStringA("Failed to present the scene.");
 			return std::runtime_error{ "Failed to present the scene." };
 		}
+
+		// rebinding buffers - necessary when using swap chain flip model, as it releases target views after each call to present
+		m_context_p->OMSetRenderTargets(1u, m_rtv_p.GetAddressOf(), m_dsv_p.Get());
 
 		return 0;
 	}
@@ -129,6 +141,45 @@ namespace d3dexp::bell0bytes
 		{
 			return std::runtime_error{ "Direct3D was unable to resize its resources!" };
 		}
+
+		return {};
+	}
+
+	expected_t<void> d3d11_graphics::initialize_pipeline()
+	{
+		// loading shader data
+		auto vs_result = load_shader(L"D:\\repos\\se-exp-win32-d3d11\\x64\\Debug\\vs_hello_triangle.cso");
+		auto ps_result = load_shader(L"D:\\repos\\se-exp-win32-d3d11\\x64\\Debug\\ps_hello_triangle.cso");
+
+		if (!vs_result || !ps_result) return std::runtime_error{ "Failed to load vertex and pixel shader bytecode." };
+
+		// create vertex shader object
+		auto hr = m_device_p->CreateVertexShader(vs_result->data, vs_result->size, nullptr, &m_vs_p);
+		if (FAILED(hr)) return std::runtime_error{ "Failed to create D3D11 vertex shader object" };
+
+		// create pixel shader object
+		hr = m_device_p->CreatePixelShader(ps_result->data, ps_result->size, nullptr, &m_ps_p);
+		if (FAILED(hr)) return std::runtime_error{ "Failed to create D3D11 pixel shader object" };
+
+		// bind shaders to pipeline
+		m_context_p->VSSetShader(m_vs_p.Get(), nullptr, 0u);
+		m_context_p->PSSetShader(m_ps_p.Get(), nullptr, 0u);
+
+		// define vertex input layout
+		D3D11_INPUT_ELEMENT_DESC layout[] = { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
+
+		// create input layout object
+		hr = m_device_p->CreateInputLayout(layout, ARRAYSIZE(layout), vs_result->data, vs_result->size, &m_layout_p);
+		if (FAILED(hr)) return std::runtime_error{ "Failed to create vertex input layout." };
+
+		// bind layout to pipeline
+		m_context_p->IASetInputLayout(m_layout_p.Get());
+
+		// release data from shader data buffer
+		if (vs_result->data) delete[] vs_result->data;
+		if (ps_result->data) delete[] ps_result->data;
+
+		OutputDebugStringA("Initialized D3D11 pipeline.\n");
 
 		return {};
 	}
@@ -195,6 +246,31 @@ namespace d3dexp::bell0bytes
 
 
 		return {};
+	}
+
+	expected_t<shader_buffer_t> d3d11_graphics::load_shader(std::wstring const& path)
+	{
+		auto buffer = shader_buffer_t{};
+
+		// open file containing shader bytecode
+		auto fin = std::ifstream{ path, std::ios::in | std::ios::binary | std::ios::ate };
+		if (fin.is_open())
+		{
+			// get file size
+			buffer.size = fin.tellg();
+
+			// read binary data
+			buffer.data = new BYTE[buffer.size];
+			fin.seekg(0, std::ios::beg);
+			fin.read(reinterpret_cast<char*>(buffer.data), buffer.size);
+			fin.close();
+		}
+		else
+		{
+			return std::runtime_error{ "Unable to open the compiled shader object!" };
+		}
+
+		return buffer;
 	}
 
 }

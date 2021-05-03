@@ -33,6 +33,12 @@ namespace d3dexp::bell0bytes
 		float z = 0.0f;
 	};
 
+	struct shader_buffer_t
+	{
+		BYTE* data = nullptr;
+		SIZE_T size = 0u;
+	};
+
 
 	class d3d11_graphics
 	{
@@ -51,12 +57,19 @@ namespace d3dexp::bell0bytes
 		~d3d11_graphics() noexcept = default;
 
 	public:
+		[[nodiscard]] ID3D11Device* device() const noexcept { return m_device_p.Get(); }
+		[[nodiscard]] ID3D11DeviceContext* context() const noexcept { return m_context_p.Get(); }
+
 		void clear_buffers();
 		expected_t<int> present();
 
 	private:
 		expected_t<void> create_resources();
+		expected_t<void> initialize_pipeline();
+		
 		expected_t<void> on_resize();
+
+		static expected_t<shader_buffer_t> load_shader(std::wstring const& path);
 
 	private:
 		com_ptr<ID3D11Device> m_device_p = nullptr;
@@ -65,6 +78,11 @@ namespace d3dexp::bell0bytes
 		
 		com_ptr<ID3D11RenderTargetView> m_rtv_p = nullptr;
 		com_ptr<ID3D11DepthStencilView> m_dsv_p = nullptr;
+
+		com_ptr<ID3D11VertexShader> m_vs_p = nullptr;
+		com_ptr<ID3D11PixelShader> m_ps_p = nullptr;
+		
+		com_ptr<ID3D11InputLayout> m_layout_p = nullptr;
 
 		win32_app* m_app_p;
 

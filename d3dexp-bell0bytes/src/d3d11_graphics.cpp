@@ -166,7 +166,11 @@ namespace d3dexp::bell0bytes
 		m_context_p->PSSetShader(m_ps_p.Get(), nullptr, 0u);
 
 		// define vertex input layout
-		D3D11_INPUT_ELEMENT_DESC layout[] = { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
+		D3D11_INPUT_ELEMENT_DESC layout[] = 
+		{ 
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,                            D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOUR",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
 
 		// create input layout object
 		hr = m_device_p->CreateInputLayout(layout, ARRAYSIZE(layout), vs_result->data, vs_result->size, &m_layout_p);
@@ -240,10 +244,14 @@ namespace d3dexp::bell0bytes
 
 		m_context_p->RSSetViewports(1u, &vp);
 
+		// rebind shaders and input layout
+		m_context_p->VSSetShader(m_vs_p.Get(), nullptr, 0u);
+		m_context_p->PSSetShader(m_ps_p.Get(), nullptr, 0u);
+		m_context_p->IASetInputLayout(m_layout_p.Get());
+
 		// adjust d2d target surface appropriately
 		auto result = m_app_p->resize_2d_surface();
 		if (!result) return std::runtime_error{ "Failed to reside D2D target surface." };
-
 
 		return {};
 	}

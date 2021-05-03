@@ -94,9 +94,9 @@ namespace d3dexp::bell0bytes
 		// initialize array of vertices for triangle
 		const vertex_t vertices[] =
 		{
-			{ 0.0f,  0.5f, 0.0f, }, //    0.5f, 1.0f, 0.5f },
-			{ 0.5f, -0.5f, 0.0f, }, //    1.0f, 1.0f, 0.0f },
-			{-0.5f, -0.5f, 0.0f, }, //    0.0f, 1.0f, 1.0f },
+			{ 0.0f,  0.5f, 0.0f,   0.5f, 1.0f, 0.5f },
+			{ 0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.0f },
+			{-0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 1.0f },
 		};
 
 		// prepare description for vertex buffer

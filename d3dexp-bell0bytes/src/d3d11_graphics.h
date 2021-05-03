@@ -31,6 +31,10 @@ namespace d3dexp::bell0bytes
 		float x = 0.0f;
 		float y = 0.0f;
 		float z = 0.0f;
+
+		float r = 0.0f;
+		float g = 0.0f;
+		float b = 0.0f;
 	};
 
 	struct shader_buffer_t

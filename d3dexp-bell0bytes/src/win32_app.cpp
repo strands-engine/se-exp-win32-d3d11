@@ -12,6 +12,7 @@
 #pragma comment(lib, "Pathcch.lib")
 
 #include <fstream>
+#include <sstream>
 #include <stdexcept>
 
 #include "string_converter.h"
@@ -63,7 +64,6 @@ namespace d3dexp::bell0bytes
 			{
 #ifdef _DEBUG
 				calculate_frame_stats();
-				debug_show_frame_stats(m_window_p->handle());
 #endif
 				// acquire input
 
@@ -86,6 +86,33 @@ namespace d3dexp::bell0bytes
 		}
 		return static_cast<int>(msg.wParam);
 	}
+
+	com_ptr<IDXGIDevice> win32_app::device_as_dxgi() const
+	{
+		auto dev_p = com_ptr<IDXGIDevice>{};
+		auto hr = m_graphics_p->m_device_p->QueryInterface(__uuidof(IDXGIDevice), &dev_p);
+		if (FAILED(hr)) throw std::runtime_error("Cannot qurery DXGI device.");
+		return dev_p;
+	}
+
+	com_ptr<IDXGISurface> win32_app::back_buffer_as_surface() const
+	{
+		auto surface_p = com_ptr<IDXGISurface>{};
+		auto hr = m_graphics_p->m_swap_chain_p->GetBuffer(0u, __uuidof(IDXGISurface), to_pp(surface_p));
+		if (FAILED(hr)) throw std::runtime_error("Cannot qurery DXGI surface from back buffer.");
+		return surface_p;
+	}
+
+	expected_t<void> win32_app::resize_2d_surface()
+	{
+		if (m_graphics_2d_p)
+		{
+			auto result = m_graphics_2d_p->create_bitmap_renderer_target();
+			if (!result) return std::runtime_error{ "Failed to adjust window size for D2D." };
+		}
+		return {};
+	}
+
 
 	expected_t<void> win32_app::initialize()
 	{
@@ -116,6 +143,15 @@ namespace d3dexp::bell0bytes
 		catch (std::runtime_error&)
 		{
 			return std::runtime_error("Failed to initialize D3D11 graphics.");
+		}
+
+		try
+		{
+			m_graphics_2d_p = std::make_unique<d2d1_graphics>(this);
+		}
+		catch (std::runtime_error&)
+		{
+			return std::runtime_error("Failed to initialize D2D1 graphics.");
 		}
 
 		m_has_started = true;
@@ -161,9 +197,17 @@ namespace d3dexp::bell0bytes
 		// clear buffers to prepare for drawing new frame
 		m_graphics_p->clear_buffers();
 
+		// rendering
+
+		// display fps info
+		auto result = m_graphics_2d_p->render_text(d2d1_graphics::context_t::fps, d2d1_graphics::colour_t::black);
+		if (!result)
+		{
+			return std::runtime_error{ "Failed to write fps information!" };
+		}
 
 		// after drawing present the scene to front buffer
-		auto result = m_graphics_p->present();
+		result = m_graphics_p->present();
 		if (!result)
 		{
 			return std::runtime_error{ "Failed to present the scene!" };
@@ -180,6 +224,11 @@ namespace d3dexp::bell0bytes
 		case VK_ESCAPE:
 		{
 			PostMessage(m_window_p->handle(), WM_CLOSE, 0, 0);
+			break;
+		}
+		case VK_F1:
+		{
+			m_is_fps_counter_shown = !m_is_fps_counter_shown;
 			break;
 		}
 		default:
@@ -255,28 +304,29 @@ namespace d3dexp::bell0bytes
 			m_frames_per_second = frame_count;
 			m_milliseconds_per_frame = 1000.0 / static_cast<double>(m_frames_per_second);
 
+			if (m_is_fps_counter_shown)
+			{
+				// prepare fps information message
+				auto ss = std::wostringstream{};
+				ss.precision(6);
+				ss << L"FPS: " << m_frames_per_second << std::endl;
+				ss << L"mSPF: " << m_milliseconds_per_frame << std::endl;
+
+				// create fps information text layout
+				m_graphics_2d_p->create_text_layout(
+					d2d1_graphics::context_t::fps, 
+					ss.str(), 
+					static_cast<float>(m_window_p->m_width), 
+					static_cast<float>(m_window_p->m_height))
+				.throw_if_failed();
+			}
+
 			// reset static counters
 			frame_count = 0;
 			elapsed_time += 1.0;
 
-			m_is_frame_stats_updated = true;
-		}
-	}
-
-	void win32_app::debug_show_frame_stats(HWND window_h)
-	{
-		if (m_is_frame_stats_updated)
-		{
-			auto ss = std::stringstream{};
-			ss << m_frames_per_second;
-			ss << " FPS (frame time: ";
-			ss << std::fixed << std::setprecision(4) << m_milliseconds_per_frame;
-			ss << " ms)";
-
-			SetWindowText(window_h, string_converter::to_wstring(ss.str()).c_str());
-
-			m_is_frame_stats_updated = false;
 		}
 	}
 
 }
+

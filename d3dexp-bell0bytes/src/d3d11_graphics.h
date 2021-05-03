@@ -12,6 +12,9 @@ namespace d3dexp::bell0bytes
 {
 	class win32_app;
 
+#ifndef D3DEXP_COMPTR
+#define D3DEXP_COMPTR
+
 	template <typename T>
 	using com_ptr = Microsoft::WRL::ComPtr<T>;
 
@@ -20,6 +23,9 @@ namespace d3dexp::bell0bytes
 	{
 		return reinterpret_cast<void**>(p.GetAddressOf());
 	}
+
+#endif // !D3DEXP_COMPTR
+
 
 	class d3d11_graphics
 	{

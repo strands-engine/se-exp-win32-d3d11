@@ -43,7 +43,7 @@ namespace d3dexp::bell0bytes
 		{
 			if (has_result())
 			{
-				new(&m_result) T(other.result);
+				new(&m_result) T(other.m_result);
 			}
 			else
 			{

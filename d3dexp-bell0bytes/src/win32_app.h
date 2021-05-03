@@ -6,6 +6,7 @@
 #include "win32_window.h"
 #include "win32_timer.h"
 #include "d3d11_graphics.h"
+#include "d2d1_graphics.h"
 
 namespace d3dexp::bell0bytes
 {
@@ -30,6 +31,11 @@ namespace d3dexp::bell0bytes
 
 	public:
 		[[nodiscard]] HWND window_handle() const noexcept { return m_window_p->handle(); }
+		[[nodiscard]] com_ptr<IDXGIDevice> device_as_dxgi() const;
+		[[nodiscard]] com_ptr<IDXGISurface> back_buffer_as_surface() const;
+		[[nodiscard]] bool is_fps_counter_shown() const noexcept { return m_is_fps_counter_shown; }
+
+		expected_t<void> resize_2d_surface();
 
 	protected:
 		virtual expected_t<void> initialize();
@@ -48,12 +54,12 @@ namespace d3dexp::bell0bytes
 		bool check_settings_file();
 
 		void calculate_frame_stats();
-		void debug_show_frame_stats(HWND window_h);
 
 	protected:
 		HINSTANCE m_instance_h = NULL;
 		std::unique_ptr<win32_window> m_window_p = nullptr;
 		std::unique_ptr<d3d11_graphics> m_graphics_p = nullptr;
+		std::unique_ptr<d2d1_graphics> m_graphics_2d_p = nullptr;
 		win32_timer m_timer;
 
 	private:
@@ -68,6 +74,7 @@ namespace d3dexp::bell0bytes
 
 		bool m_is_frame_stats_updated = true;
 		bool m_is_settings_file_valid = false;
+		bool m_is_fps_counter_shown = false;
 
 	protected:
 		bool m_is_paused = false;

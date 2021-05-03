@@ -188,6 +188,11 @@ namespace d3dexp::bell0bytes
 
 		m_context_p->RSSetViewports(1u, &vp);
 
+		// adjust d2d target surface appropriately
+		auto result = m_app_p->resize_2d_surface();
+		if (!result) return std::runtime_error{ "Failed to reside D2D target surface." };
+
+
 		return {};
 	}
 

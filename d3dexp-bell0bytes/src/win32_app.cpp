@@ -194,25 +194,12 @@ namespace d3dexp::bell0bytes
 
 	expected_t<int> win32_app::render(double farseer)
 	{
-		// clear buffers to prepare for drawing new frame
-		m_graphics_p->clear_buffers();
-
-		// rendering
-
-		// display fps info
-		auto result = m_graphics_2d_p->render_text(d2d1_graphics::context_t::fps, d2d1_graphics::colour_t::black);
-		if (!result)
-		{
-			return std::runtime_error{ "Failed to write fps information!" };
-		}
-
 		// after drawing present the scene to front buffer
-		result = m_graphics_p->present();
+		auto result = m_graphics_p->present();
 		if (!result)
 		{
 			return std::runtime_error{ "Failed to present the scene!" };
 		}
-
 		return 0;
 	}
 

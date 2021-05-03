@@ -26,6 +26,13 @@ namespace d3dexp::bell0bytes
 
 #endif // !D3DEXP_COMPTR
 
+	struct vertex_t
+	{
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
+	};
+
 
 	class d3d11_graphics
 	{

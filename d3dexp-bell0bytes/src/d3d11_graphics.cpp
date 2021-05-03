@@ -137,6 +137,7 @@ namespace d3dexp::bell0bytes
 	expected_t<void> d3d11_graphics::on_resize()
 	{
 		// clear context state
+		m_app_p->clear_2d_target();
 		m_context_p->ClearState();
 		m_rtv_p.Reset();
 		m_dsv_p.Reset();

@@ -21,6 +21,11 @@ namespace d3dexp::bell0bytes
 		expected_t<void> initialize() override;
 		void shutdown(expected_t<void>* expected = nullptr) override;
 
+		void update(double dt) override;
+		expected_t<int> render(double farseer) override;
+
+		void on_key_down(WPARAM wparam, LPARAM lparam) override;
+
 		expected_t<int> run();
 	};
 }

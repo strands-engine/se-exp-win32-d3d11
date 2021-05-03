@@ -35,6 +35,7 @@ namespace d3dexp::bell0bytes
 		[[nodiscard]] com_ptr<IDXGISurface> back_buffer_as_surface() const;
 		[[nodiscard]] bool is_fps_counter_shown() const noexcept { return m_is_fps_counter_shown; }
 
+		void clear_2d_target() { if(m_graphics_2d_p) m_graphics_2d_p->m_context_p->SetTarget(nullptr); }
 		expected_t<void> resize_2d_surface();
 
 	protected:

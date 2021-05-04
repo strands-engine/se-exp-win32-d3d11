@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <Windows.h>
 #include <wrl/client.h>
 #include <d3d11.h>
@@ -58,20 +60,29 @@ namespace d3dexp::bell0bytes
 		d3d11_graphics& operator=(d3d11_graphics const&) = delete;
 		d3d11_graphics& operator=(d3d11_graphics &&) = delete;
 
-		~d3d11_graphics() noexcept = default;
+		~d3d11_graphics() noexcept;
 
 	public:
 		[[nodiscard]] ID3D11Device* device() const noexcept { return m_device_p.Get(); }
 		[[nodiscard]] ID3D11DeviceContext* context() const noexcept { return m_context_p.Get(); }
+		
+		[[nodiscard]] bool is_fullscreen() const noexcept { return m_is_fullscreen; }
+		[[nodiscard]] bool is_sc_fullscreen() const noexcept;
 
 		void clear_buffers();
 		expected_t<int> present();
+
+		void increase_resolution();
+		void decrease_resolution();
 
 	private:
 		expected_t<void> create_resources();
 		expected_t<void> initialize_pipeline();
 		
 		expected_t<void> on_resize();
+		
+		expected_t<void> write_display_mode_to_config();
+		void load_settings();
 
 		static expected_t<shader_buffer_t> load_shader(std::wstring const& path);
 
@@ -90,6 +101,13 @@ namespace d3dexp::bell0bytes
 
 		win32_app* m_app_p;
 
+		std::vector<DXGI_MODE_DESC> m_display_modes;
+		std::size_t m_chosen_display_mode_ix = 0ul;
+
 		DXGI_FORMAT m_requested_pixel_format = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+		bool m_is_fullscreen = false;
+		bool m_is_starting_in_fullscreen = false;
+		bool m_has_to_change_mode = false;
 	};
 }

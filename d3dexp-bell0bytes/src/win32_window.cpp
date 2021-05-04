@@ -222,6 +222,26 @@ namespace d3dexp::bell0bytes
 			return 0;
 		}
 
+		case WM_WINDOWPOSCHANGED:
+		{
+			if (m_app_p->m_has_started)
+			{
+				// check if mode was switched to fullscreen
+				const auto was_switched = m_app_p->m_graphics_p->is_fullscreen() != m_app_p->m_graphics_p->is_sc_fullscreen();
+				
+				// if so, pause intermittently the app, and in the meantime resize everything
+				if (was_switched)
+				{
+					m_app_p->m_is_paused = true;
+					m_app_p->m_timer.pause();
+					m_app_p->on_resize();
+					m_app_p->m_timer.start();
+					m_app_p->m_is_paused = false;
+				}
+			}
+			return 0;
+		}
+
 		case WM_KEYDOWN:
 		{
 			m_app_p->on_key_down(wparam, lparam);

@@ -35,6 +35,14 @@ namespace d3dexp::bell0bytes
 		[[nodiscard]] com_ptr<IDXGISurface> back_buffer_as_surface() const;
 		[[nodiscard]] bool is_fps_counter_shown() const noexcept { return m_is_fps_counter_shown; }
 
+		[[nodiscard]] int window_width() const noexcept { return m_window_p->m_width; }
+		[[nodiscard]] int window_height() const noexcept { return m_window_p->m_height; }
+
+		[[nodiscard]] int display_mode_width() const noexcept { return m_graphics_p->m_display_modes[m_graphics_p->m_chosen_display_mode_ix].Width; }
+		[[nodiscard]] int display_mode_height() const noexcept { return m_graphics_p->m_display_modes[m_graphics_p->m_chosen_display_mode_ix].Height; }
+
+		[[nodiscard]] std::wstring const& settings_path() const noexcept { return m_settings_path; }
+
 		void clear_2d_target() { if(m_graphics_2d_p) m_graphics_2d_p->m_context_p->SetTarget(nullptr); }
 		expected_t<void> resize_2d_surface();
 

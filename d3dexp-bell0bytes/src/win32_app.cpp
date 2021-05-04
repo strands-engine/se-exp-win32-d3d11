@@ -218,6 +218,18 @@ namespace d3dexp::bell0bytes
 			m_is_fps_counter_shown = !m_is_fps_counter_shown;
 			break;
 		}
+		case VK_PRIOR:
+		{
+			// page up -> chose higher resolution
+			m_graphics_p->increase_resolution();
+			break;
+		}
+		case VK_NEXT:
+		{
+			// page down -> chose lower resolution
+			m_graphics_p->decrease_resolution();
+			break;
+		}
 		default:
 			break;
 		}

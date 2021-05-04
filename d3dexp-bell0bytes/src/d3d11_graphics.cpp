@@ -3,6 +3,11 @@
 #include <stdexcept>
 #include <fstream>
 
+#include <lua.hpp>
+#pragma comment(lib, "liblua54.a") 
+#include <sol/sol.hpp>
+
+#include "string_converter.h"
 #include "win32_app.h"
 
 namespace d3dexp::bell0bytes
@@ -10,6 +15,9 @@ namespace d3dexp::bell0bytes
 	d3d11_graphics::d3d11_graphics(win32_app * app_p)
 		: m_app_p(app_p)
 	{
+		// load settings from config file
+		load_settings();
+
 		// DEVICE AND DEVICE CONTEXT INITIALIZATION
 		
 		// setup device creation flags
@@ -66,6 +74,19 @@ namespace d3dexp::bell0bytes
 		OutputDebugStringA("D3D11 successfully initialized.\n");
 	}
 
+	d3d11_graphics::~d3d11_graphics() noexcept
+	{
+		m_swap_chain_p->SetFullscreenState(FALSE, nullptr);
+	}
+
+	bool d3d11_graphics::is_sc_fullscreen() const noexcept
+	{
+		auto result = BOOL{};
+		m_swap_chain_p->GetFullscreenState(&result, nullptr);
+		return static_cast<bool>(result);
+	}
+
+
 	void d3d11_graphics::clear_buffers()
 	{
 		// clear back buffer to given colour
@@ -93,6 +114,27 @@ namespace d3dexp::bell0bytes
 
 		return 0;
 	}
+
+	void d3d11_graphics::increase_resolution()
+	{
+		m_has_to_change_mode = (m_chosen_display_mode_ix < m_display_modes.size() - 1);
+		if (m_has_to_change_mode)
+		{ 
+			m_chosen_display_mode_ix++;
+			on_resize();
+		}
+	}
+
+	void d3d11_graphics::decrease_resolution()
+	{
+		m_has_to_change_mode = (m_chosen_display_mode_ix > 0);
+		if (m_has_to_change_mode)
+		{
+			m_chosen_display_mode_ix--;
+			on_resize();
+		}
+	}
+
 
 	expected_t<void> d3d11_graphics::create_resources()
 	{
@@ -135,6 +177,52 @@ namespace d3dexp::bell0bytes
 		// create swap chain as described above
 		hr = dxgi_factory_p->CreateSwapChain(m_device_p.Get(), &sc_desc, &m_swap_chain_p);
 		if (FAILED(hr)) return std::runtime_error{ "The creation of the swap chain failed!" };
+
+
+		// get underlying output for display mode enumeration
+		auto output_p = com_ptr<IDXGIOutput>{};
+		hr = m_swap_chain_p->GetContainingOutput(&output_p);
+		if (FAILED(hr)) return std::runtime_error{ "Unable to retrieve swap chain output." };
+
+		// get array of supported display modes
+		auto modes_count = UINT{};
+		output_p->GetDisplayModeList(m_requested_pixel_format, 0u, &modes_count, nullptr);
+		if (FAILED(hr)) return std::runtime_error{ "Unable to list all supported display modes." };
+		m_display_modes.resize(modes_count);
+		output_p->GetDisplayModeList(m_requested_pixel_format, 0u, &modes_count, m_display_modes.data());
+		if (FAILED(hr)) return std::runtime_error{ "Unable to list all supported display modes." };
+
+		// if currently chosen resolution is not supported default to the smallest one
+		auto is_res_supported = false;
+		for (auto i = std::size_t{}; i < modes_count; i++)
+		{
+			if (m_app_p->window_width() == m_display_modes[i].Width && m_app_p->window_height() == m_display_modes[i].Height)
+			{
+				is_res_supported = true;
+				m_chosen_display_mode_ix = i;
+				break;
+			}
+		}
+
+		if (!is_res_supported)
+		{
+			OutputDebugStringA("Desired resolution not supported. Resizing to samllest one..."); // index remains equal to 0
+
+			hr = m_swap_chain_p->ResizeTarget(&(m_display_modes[m_chosen_display_mode_ix]));
+			if (FAILED(hr)) return std::runtime_error("Unable to resize target to a supported display mode.");
+
+			auto result = write_display_mode_to_config();
+			if (!result) return std::runtime_error{ "Unable to write t configuration file." };
+		}
+
+		// start in fullscreen mode if requested
+		if (m_is_starting_in_fullscreen)
+		{
+			hr = m_swap_chain_p->SetFullscreenState(true, nullptr);
+			if (FAILED(hr)) return std::runtime_error{ "Unable to switch to fullscreen mode!" };
+			m_is_fullscreen = true;
+		}
+
 
 		// complete other maintenance steps required after every resize
 		if (!on_resize())
@@ -191,6 +279,49 @@ namespace d3dexp::bell0bytes
 	// NOTE: If window dimensions were not changed, entire d3d stuf fshould not be recreated (???)
 	expected_t<void> d3d11_graphics::on_resize()
 	{
+		auto hr = HRESULT{};
+
+		// FIGURE OUT FULLSCREEN RELATED ISSUES
+
+		// zero out current mode refresh rate (as advised by Microsoft docs)
+		auto current_display_mode = m_display_modes[m_chosen_display_mode_ix];
+		current_display_mode.RefreshRate.Numerator = 0;
+		current_display_mode.RefreshRate.Denominator = 0;
+		
+		// check if mode changed and perform switch
+		if (is_fullscreen() != is_sc_fullscreen())
+		{
+			// switch modes accordingly
+			if (is_sc_fullscreen())
+			{
+				// switch to fullscreen - MSDN recommends resizing the target before going to fullscreen
+				hr = m_swap_chain_p->ResizeTarget(&current_display_mode);
+				if (FAILED(hr)) return std::runtime_error{ "Unable to resize target!" };
+
+				// set state to fullscreen
+				hr = m_swap_chain_p->SetFullscreenState(true, nullptr);
+				if (FAILED(hr)) return std::runtime_error{ "Unable to switch to fullscreen mode!" };
+			}
+			else
+			{
+				// switch state to windowed
+				hr = m_swap_chain_p->SetFullscreenState(false, nullptr);
+				if (FAILED(hr)) return std::runtime_error{ "Unable to switch to fullscreen mode!" };
+
+				// recompute and set new window size according to desired client size
+				auto wnd_rect = RECT{ 0, 0, m_app_p->display_mode_width(), m_app_p->display_mode_height() };
+				auto awr_res = AdjustWindowRectEx(&wnd_rect, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW);
+				if (!awr_res) return std::runtime_error{ "Failed to adjust window rectangle!" };
+				SetWindowPos(m_app_p->window_handle(), HWND_TOP, 0, 0, wnd_rect.right - wnd_rect.left, wnd_rect.bottom - wnd_rect.top, SWP_NOMOVE);
+			}
+
+			m_is_fullscreen = !m_is_fullscreen;
+		}
+
+		// resize target (again?)
+		hr = m_swap_chain_p->ResizeTarget(&current_display_mode);
+		if (FAILED(hr)) return std::runtime_error{ "Unable to resize target!" };
+
 		// clear context state
 		m_app_p->clear_2d_target();
 		m_context_p->ClearState();
@@ -198,12 +329,12 @@ namespace d3dexp::bell0bytes
 		m_dsv_p.Reset();
 
 		// resize swap chain buffers to comply with current window size
-		auto hr = m_swap_chain_p->ResizeBuffers(
+		hr = m_swap_chain_p->ResizeBuffers(
 			0,											// number of buffers (0 - all)												
 			0,											// buffer width (0 - determined from the window)
 			0,											// buffer height (0 - determined from the window)
 			DXGI_FORMAT_UNKNOWN,						// pixel format (UNKNOWN - do not change)
-			0);											// change flags - no changes
+			DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);	// change flags - allow mode change
 		if (FAILED(hr)) return std::runtime_error{ "Direct3D was unable to resize the swap chain!" };
 
 		// recreate render target view for new back buffer texture resource
@@ -255,6 +386,30 @@ namespace d3dexp::bell0bytes
 
 		return {};
 	}
+
+	void d3d11_graphics::load_settings()
+	{
+		auto path = m_app_p->settings_path() + L"\\settings.lua";
+		try
+		{
+			auto lua = sol::state{};
+			lua.script_file(string_converter::to_string(path));
+
+			// read from the configuration file, default to 800 x 600
+			m_is_starting_in_fullscreen = lua["config"]["fullscreen"].get_or(false);
+		}
+		catch (std::exception)
+		{
+			OutputDebugStringA("Failed to load d3d11 settings. Using default windowed mode.");
+		}
+	}
+
+	expected_t<void> d3d11_graphics::write_display_mode_to_config()
+	{
+		// BLAH !!!
+		return {};
+	}
+
 
 	expected_t<shader_buffer_t> d3d11_graphics::load_shader(std::wstring const& path)
 	{
